@@ -1,6 +1,9 @@
 package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
+import com.mypensamiento.mypensamiento.domain.model.Thought;
 import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
+import com.mypensamiento.mypensamiento.infrastructure.adapters.mappers.ThoughMapper;
+import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.ThoughtEntity;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.persistence.ThoughtJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +16,11 @@ public class ThoughtRepositoryJpaAdapter implements ThoughtRepository {
         this.thoughtJpaRepository = thoughtJpaRepository;
     }
 
-    // TODO: implementar métodos de ThoughtRepository cuando se definan en el dominio.
+    @Override
+    public void save(Thought thought) {
+        ThoughtEntity entity = new ThoughMapper().toEntity(thought);
+        this.thoughtJpaRepository.save(entity);
+
+    }
+
 }

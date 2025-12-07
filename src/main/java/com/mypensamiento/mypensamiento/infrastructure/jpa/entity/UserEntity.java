@@ -22,7 +22,7 @@ public class UserEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String nickname;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -45,6 +45,7 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role;
 
+    private Boolean status;
     public UserEntity() {
     }
 
@@ -52,71 +53,89 @@ public class UserEntity {
         return id;
     }
 
-    public void setId(Long id) {
+    public UserEntity setId(Long id) {
         this.id = id;
+        return this;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserEntity setNickname(String nickname) {
+        this.nickname = nickname;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public UserEntity setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public UserEntity setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getFullName() {
         return fullName;
     }
 
-    public void setFullName(String fullName) {
+    public UserEntity setFullName(String fullName) {
         this.fullName = fullName;
+        return this;
     }
 
     public String getBio() {
         return bio;
     }
 
-    public void setBio(String bio) {
+    public UserEntity setBio(String bio) {
         this.bio = bio;
+        return this;
     }
 
     public String getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(String profilePicture) {
+    public UserEntity setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+        return this;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public UserEntity setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public UserEntity setRole(Role role) {
         this.role = role;
+        return this;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public UserEntity setStatus(Boolean status) {
+        this.status = status;
+        return this;
     }
 }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class User {
     private Long id;
-    private String username;
+    private String nickname;
     private String email;
     private String password;
     private String full_name;
@@ -15,9 +15,10 @@ public class User {
     private String profile_picture;
     private LocalDateTime created_at;
     private Role role;
+    private Boolean status;
 
-    public User(String username, String email, String password, String full_name, String bio, String profile_picture, Role role) {
-        this.username = username;
+    public User(String nickname, String email, String password, String full_name, String bio, String profile_picture, Role role) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.full_name = full_name;
@@ -32,71 +33,89 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) {
+    public User setId(Long id) {
         this.id = id;
+        return this;
     }
 
-    public String getUsername() {
-        return username;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public User setNickname(String nickname) {
+        this.nickname = nickname;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public User setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getFull_name() {
         return full_name;
     }
 
-    public void setFull_name(String full_name) {
+    public User setFull_name(String full_name) {
         this.full_name = full_name;
+        return this;
     }
 
     public String getBio() {
         return bio;
     }
 
-    public void setBio(String bio) {
+    public User setBio(String bio) {
         this.bio = bio;
+        return this;
     }
 
     public String getProfile_picture() {
         return profile_picture;
     }
 
-    public void setProfile_picture(String profile_picture) {
+    public User setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
+        return this;
     }
 
     public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public User setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
+        return this;
     }
 
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role rele) {
-        this.role = rele;
+    public User setRole(Role role) {
+        this.role = role;
+        return this;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public User setStatus(Boolean status) {
+        this.status = status;
+        return this;
     }
 }

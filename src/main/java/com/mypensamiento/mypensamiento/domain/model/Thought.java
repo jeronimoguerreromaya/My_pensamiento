@@ -14,31 +14,38 @@ public class Thought {
         return id;
     }
 
-    public void setId(Long id) {
+    public Thought setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public long getUsers_id() {
         return users_id;
     }
 
-    public void setUsers_id(long users_id) {
+    public Thought setUsers_id(long users_id) {
+
         this.users_id = users_id;
+        return this;
     }
 
     public String getThought_text() {
         return thought_text;
     }
 
-    public void setThought_text(String thought_text) {
+    public Thought setThought_text(String thought_text) {
+
         this.thought_text = thought_text;
+        return this;
     }
 
     public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public Thought setCreated_at(LocalDateTime created_at) {
+
         this.created_at = created_at;
+        return this;
     }
 }
