@@ -40,39 +40,44 @@ public class CommentEntity {
         return id;
     }
 
-    public void setId(Long id) {
+    public CommentEntity setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public ThoughtEntity getThought() {
         return thought;
     }
 
-    public void setThought(ThoughtEntity thought) {
+    public CommentEntity setThought(ThoughtEntity thought) {
         this.thought = thought;
+        return this;
     }
 
     public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public CommentEntity setUser(UserEntity user) {
         this.user = user;
+        return this;
     }
 
     public String getCommentText() {
         return commentText;
     }
 
-    public void setCommentText(String commentText) {
+    public CommentEntity setCommentText(String commentText) {
         this.commentText = commentText;
+        return this;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public CommentEntity setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 }

@@ -6,4 +6,6 @@ public interface ThoughtRepository {
 
     void save(Thought thought);
 
+    Boolean existsById(Long id);
+
 }

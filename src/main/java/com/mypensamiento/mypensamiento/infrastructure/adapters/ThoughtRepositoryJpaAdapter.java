@@ -23,4 +23,9 @@ public class ThoughtRepositoryJpaAdapter implements ThoughtRepository {
 
     }
 
+    @Override
+    public Boolean existsById(Long id) {
+        return thoughtJpaRepository.existsById(id);
+    }
+
 }
