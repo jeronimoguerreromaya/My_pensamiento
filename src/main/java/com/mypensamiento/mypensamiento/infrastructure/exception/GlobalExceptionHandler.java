@@ -3,8 +3,7 @@ package com.mypensamiento.mypensamiento.infrastructure.exception;
 import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
-import com.mypensamiento.mypensamiento.application.exception.UserNotFoundException;
-import org.apache.coyote.Response;
+import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.swing.text.html.parser.Entity;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -33,8 +31,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException e) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFoundException(NotFoundException e) {
         log.warn("User not found: {}", e.getMessage());
         Map<String, Object> response = Map.of(
                 "timestamp", LocalDateTime.now(),

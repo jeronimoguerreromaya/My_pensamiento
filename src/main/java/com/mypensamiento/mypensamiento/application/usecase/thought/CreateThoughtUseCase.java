@@ -2,7 +2,7 @@ package com.mypensamiento.mypensamiento.application.usecase.thought;
 
 import com.mypensamiento.mypensamiento.application.dto.request.CreateThoughtRequest;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
-import com.mypensamiento.mypensamiento.application.exception.UserNotFoundException;
+import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.Thought;
 import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
 import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
@@ -20,7 +20,7 @@ public class CreateThoughtUseCase {
     }
     public void execute(CreateThoughtRequest request, Long id){
         if(!userRepository.existsById(id)){
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
         if(request.content().isEmpty()){
             throw new FieldValidationException("Thought content is required");

@@ -2,7 +2,7 @@ package com.mypensamiento.mypensamiento.application.usecase.user;
 
 import com.mypensamiento.mypensamiento.application.dto.request.UpdatePasswordRequest;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
-import com.mypensamiento.mypensamiento.application.exception.UserNotFoundException;
+import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
 import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
@@ -22,7 +22,7 @@ public class UpdatePasswordUseCase {
         User user = userRepository.getById(id);
 
         if (user == null) {
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
 
         if (request.password() == null || request.password().isEmpty()

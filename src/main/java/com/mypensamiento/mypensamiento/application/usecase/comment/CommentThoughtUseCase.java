@@ -2,7 +2,7 @@ package com.mypensamiento.mypensamiento.application.usecase.comment;
 
 import com.mypensamiento.mypensamiento.application.dto.request.CommentThoughtRequest;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
-import com.mypensamiento.mypensamiento.application.exception.UserNotFoundException;
+import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.Comment;
 import com.mypensamiento.mypensamiento.domain.repository.CommentRepository;
 import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
@@ -32,7 +32,7 @@ public class CommentThoughtUseCase {
         }
 
         if(!userRepository.existsById(id_user)){
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
 
         if(!thoughtRepository.existsById(request.id_thought())){

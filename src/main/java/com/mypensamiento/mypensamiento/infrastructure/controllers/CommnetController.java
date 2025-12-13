@@ -9,7 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("/api/mipensamiento/comment")
 public class CommnetController {
 
     private static final Logger logger = LoggerFactory.getLogger(CommnetController.class);

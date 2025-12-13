@@ -37,31 +37,35 @@ public class LikeEntity {
         return id;
     }
 
-    public void setId(LikeId id) {
+    public LikeEntity setId(LikeId id) {
         this.id = id;
+        return this;
     }
 
     public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public LikeEntity setUser(UserEntity user) {
         this.user = user;
+        return this;
     }
 
     public ThoughtEntity getThought() {
         return thought;
     }
 
-    public void setThought(ThoughtEntity thought) {
+    public LikeEntity setThought(ThoughtEntity thought) {
         this.thought = thought;
+        return this;
     }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public LikeEntity setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 }

@@ -1,7 +1,7 @@
 package com.mypensamiento.mypensamiento.application.usecase.user;
 
 import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
-import com.mypensamiento.mypensamiento.application.exception.UserNotFoundException;
+import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
 import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
@@ -21,7 +21,7 @@ public class UpdateUserPatchUseCase {
         User uptdate = userRepository.getById(id);
 
         if (uptdate == null) {
-            throw new UserNotFoundException("User not found");
+            throw new NotFoundException("User not found");
         }
 
         if (request.nickname() != null && !request.nickname().isEmpty()) {

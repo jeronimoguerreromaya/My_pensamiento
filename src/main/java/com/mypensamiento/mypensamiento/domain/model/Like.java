@@ -14,23 +14,26 @@ public class Like {
         return user_id;
     }
 
-    public void setUser_id(Long user_id) {
+    public Like setUser_id(Long user_id) {
         this.user_id = user_id;
+        return this;
     }
 
     public Long getThought_id() {
         return thought_id;
     }
 
-    public void setThought_id(Long thought_id) {
+    public Like setThought_id(Long thought_id) {
         this.thought_id = thought_id;
+        return this;
     }
 
     public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public Like setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
+        return this;
     }
 }

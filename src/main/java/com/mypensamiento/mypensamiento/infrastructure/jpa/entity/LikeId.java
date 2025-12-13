@@ -28,16 +28,18 @@ public class LikeId implements Serializable {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public LikeId setUserId(Long userId) {
         this.userId = userId;
+        return this;
     }
 
     public Long getThoughtId() {
         return thoughtId;
     }
 
-    public void setThoughtId(Long thoughtId) {
+    public LikeId setThoughtId(Long thoughtId) {
         this.thoughtId = thoughtId;
+        return this;
     }
 
     @Override
