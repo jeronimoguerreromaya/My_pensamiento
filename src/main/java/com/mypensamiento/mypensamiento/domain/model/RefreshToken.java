@@ -10,6 +10,7 @@ public class RefreshToken {
     private LocalDateTime created_at;
     private LocalDateTime expires_at;
     private boolean revoked;
+    private boolean valid;
     private String replaced_by_hash;
 
     public RefreshToken() {}
@@ -60,5 +61,29 @@ public class RefreshToken {
 
     public void setRevoked(boolean revoked) {
         this.revoked = revoked;
+    }
+
+    public String getToken_hash() {
+        return token_hash;
+    }
+
+    public void setToken_hash(String token_hash) {
+        this.token_hash = token_hash;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getReplaced_by_hash() {
+        return replaced_by_hash;
+    }
+
+    public void setReplaced_by_hash(String replaced_by_hash) {
+        this.replaced_by_hash = replaced_by_hash;
     }
 }

@@ -35,6 +35,9 @@ public class RefreshTokenEntity {
     @Column(nullable = false)
     private boolean revoked;
 
+    @Column(nullable = false)
+    private boolean valid;
+
     private String replaced_by_hash;
 
     public RefreshTokenEntity() {
@@ -86,5 +89,29 @@ public class RefreshTokenEntity {
 
     public void setRevoked(boolean revoked) {
         this.revoked = revoked;
+    }
+
+    public String getTokenHash() {
+        return tokenHash;
+    }
+
+    public void setTokenHash(String tokenHash) {
+        this.tokenHash = tokenHash;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getReplaced_by_hash() {
+        return replaced_by_hash;
+    }
+
+    public void setReplaced_by_hash(String replaced_by_hash) {
+        this.replaced_by_hash = replaced_by_hash;
     }
 }

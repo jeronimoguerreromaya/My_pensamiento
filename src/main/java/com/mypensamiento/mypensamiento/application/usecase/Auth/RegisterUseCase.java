@@ -15,23 +15,23 @@ import java.time.LocalDateTime;
 
 public class RegisterUseCase {
 
-    UserPort userRepository;
-    PasswordEncoderPort passwordEncoderRepository;
-    RefreshTokenPort refreshTokenRepository;
-    TokenPort tokenProvider;
-    HashPort hashProvider;
+    UserPort userPort;
+    PasswordEncoderPort passwordEncoderPort;
+    RefreshTokenPort refreshTokenPort;
+    TokenPort tokenPort;
+    HashPort hashPort;
     public RegisterUseCase(
-            UserPort userRepository,
-            PasswordEncoderPort passwordEncoderRepository,
-            RefreshTokenPort refreshTokenRepository,
-            TokenPort tokenProvider,
-            HashPort hashProvider
+            UserPort userPort,
+            PasswordEncoderPort passwordEncoderPort,
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort,
+            HashPort hashPort
     ) {
-        this.userRepository = userRepository;
-        this.passwordEncoderRepository = passwordEncoderRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.tokenProvider = tokenProvider;
-        this.hashProvider = hashProvider;
+        this.userPort = userPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.refreshTokenPort = refreshTokenPort;
+        this.tokenPort = tokenPort;
+        this.hashPort = hashPort;
     }
     public AuthResponse execute(RegisterRequest request) {
 
@@ -40,10 +40,10 @@ public class RegisterUseCase {
                 request.password() == null || request.password().isEmpty()) {
             throw new FieldValidationException("Some Fields are required");
         }
-        if (userRepository.existsByNickname(request.nickname())) {
+        if (userPort.existsByNickname(request.nickname())) {
             throw new NickNameAlreadyExistsException("Nickname " + request.nickname() + " already exists");
         }
-        if (userRepository.existsByEmail(request.email())) {
+        if (userPort.existsByEmail(request.email())) {
             throw new EmailAlreadyExistsException("Email " + request.email() + " already exists");
         }
 
@@ -52,7 +52,7 @@ public class RegisterUseCase {
         User user = new User()
                 .setNickname(request.nickname())
                 .setEmail(request.email())
-                .setPassword(passwordEncoderRepository.encode(request.password()))
+                .setPassword(passwordEncoderPort.encode(request.password()))
                 .setStatus(Boolean.TRUE)
                 .setRole(Role.USER)
                 .setCreated_at(transactionTime);
@@ -67,12 +67,12 @@ public class RegisterUseCase {
             user.setProfile_picture(request.profile_picture());
         }
 
-        User userSave = userRepository.save(user);
+        User userSave = userPort.save(user);
 
-        TokenResponse accessToken = tokenProvider.generateToken(userSave,transactionTime);
-        TokenResponse refreshToken = tokenProvider.generateRefreshToken(userSave,transactionTime);
+        TokenResponse accessToken = tokenPort.generateToken(userSave,transactionTime);
+        TokenResponse refreshToken = tokenPort.generateRefreshToken(userSave,transactionTime);
 
-        String refreshTokenHash = hashProvider.hash(accessToken.token());
+        String refreshTokenHash = hashPort.hash(refreshToken.token());
 
         RefreshToken refreshTokenSave = new RefreshToken();
             refreshTokenSave.setUser_id(userSave.getId());
@@ -80,10 +80,11 @@ public class RegisterUseCase {
             refreshTokenSave.setCreated_at(transactionTime);
             refreshTokenSave.setExpires_at(refreshToken.expirationDate());
             refreshTokenSave.setRevoked(false);
+            refreshTokenSave.setValid(true);
 
-        refreshTokenRepository.save(refreshTokenSave);
+        refreshTokenPort.save(refreshTokenSave);
 
-       return new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
+        return new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
     }
 
 }

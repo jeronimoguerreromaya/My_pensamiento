@@ -1,9 +1,6 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
-import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutUseCase;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.*;
 import com.mypensamiento.mypensamiento.domain.ports.*;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.BCryptPasswordEncoderAdapter;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.JwtAdapte;
@@ -19,67 +16,75 @@ public class AuthBeansConfig {
 
     @Bean
     public RegisterUseCase registerUseCase(
-            UserPort userRepository,
-            PasswordEncoderPort passwordEncoderRepository,
-            RefreshTokenPort refreshTokenRepository,
-            TokenPort tokenProvider,
-            HashPort hashProvider
+            UserPort userPort,
+            PasswordEncoderPort passwordEncoderPort,
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort,
+            HashPort hashPort
 
     ){
-        return new RegisterUseCase(userRepository,passwordEncoderRepository,refreshTokenRepository,tokenProvider,hashProvider);
+        return new RegisterUseCase(userPort,passwordEncoderPort,refreshTokenPort,tokenPort,hashPort);
     }
 
     @Bean
     public LoginUseCase loginUseCase(
-            UserPort userRepository,
-            PasswordEncoderPort passwordEncoderRepository,
-            RefreshTokenPort refreshTokenRepository,
-            TokenPort tokenProvider,
-            AuthenticationPort authenticationRepository,
-            HashPort hashProvider
+            UserPort userPort,
+            PasswordEncoderPort passwordEncoderPort,
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort,
+            AuthenticationPort authenticationPort,
+            HashPort hashPort
 
     ){
         return new LoginUseCase(
-                userRepository,
-                passwordEncoderRepository,
-                refreshTokenRepository,
-                tokenProvider,
-                authenticationRepository,
-                hashProvider
+                userPort,
+                passwordEncoderPort,
+                refreshTokenPort,
+                tokenPort,
+                authenticationPort,
+                hashPort
 
         );
     }
     @Bean
     public RefreshUseCase refreshUseCase(
-            RefreshTokenPort refreshTokenRepository,
-            UserPort userRepository,
-            TokenPort tokenProvider,
-            HashPort hashProvider
+            RefreshTokenPort refreshTokenPort,
+            UserPort userPort,
+            TokenPort tokenPort,
+            HashPort hashPort
     ){
-        return new RefreshUseCase(refreshTokenRepository,userRepository,tokenProvider,hashProvider);
+        return new RefreshUseCase(refreshTokenPort,userPort,tokenPort,hashPort);
     }
 
     @Bean
     public LogoutUseCase logoutUseCase(
-            RefreshTokenPort refreshTokenRepository,
-            TokenPort tokenProvider
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort
     ){
-        return new LogoutUseCase(refreshTokenRepository, tokenProvider);
+        return new LogoutUseCase(refreshTokenPort, tokenPort);
+    }
+
+    @Bean
+    public LogoutAllUseCase logoutAllUseCase(
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort
+    ){
+        return new LogoutAllUseCase(refreshTokenPort, tokenPort);
     }
 
 
     @Bean
-    public TokenPort tokenProvider(JwtService jwtService){
+    public TokenPort tokenPort(JwtService jwtService){
         return new JwtAdapte(jwtService);
     }
 
     @Bean
-    public PasswordEncoderPort passwordEncoderRepository() {
+    public PasswordEncoderPort passwordEncoderPort() {
         return new BCryptPasswordEncoderAdapter();
     }
 
     @Bean
-    public AuthenticationPort authenticationRepository(AuthenticationManager authenticationManager){
+    public AuthenticationPort authenticationPort(AuthenticationManager authenticationManager){
         return new com.mypensamiento.mypensamiento.infrastructure.adapters.AuthenticationAdapter(authenticationManager);
     }
 

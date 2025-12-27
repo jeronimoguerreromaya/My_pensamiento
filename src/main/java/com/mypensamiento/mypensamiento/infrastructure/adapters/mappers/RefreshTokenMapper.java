@@ -11,12 +11,11 @@ public class RefreshTokenMapper {
         RefreshTokenEntity entity = new RefreshTokenEntity();
         entity.setId(domain.getId());
         entity.setToken(domain.getToken());
+        entity.setReplaced_by_hash(domain.getReplaced_by_hash());
         entity.setCreatedAt(domain.getCreated_at());
         entity.setExpiresAt(domain.getExpires_at());
         entity.setRevoked(domain.isRevoked());
-
-        // Nota: Aquí asumimos que asignas el usuario en el Adapter o que el dominio tiene el objeto User completo
-        // Para simplificar, solo mapeamos el ID si es necesario o lo manejamos en el adapter
+        entity.setValid(domain.isValid());
         UserEntity userEntity = new UserEntity();
         userEntity.setId(domain.getUser_id());
         entity.setUser(userEntity);
@@ -30,9 +29,12 @@ public class RefreshTokenMapper {
         domain.setId(entity.getId());
         domain.setUser_id(entity.getUser().getId());
         domain.setToken(entity.getToken());
+        domain.setReplaced_by_hash(entity.getReplaced_by_hash());
         domain.setCreated_at(entity.getCreatedAt());
-        domain.setExpires_at(entity.getExpiresAt());
         domain.setRevoked(entity.isRevoked());
+        domain.setValid(entity.isValid());
+        domain.setExpires_at(entity.getExpiresAt());
+
         return domain;
     }
 

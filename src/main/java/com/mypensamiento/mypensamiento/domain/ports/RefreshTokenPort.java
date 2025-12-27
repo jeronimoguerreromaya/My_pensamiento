@@ -11,4 +11,10 @@ public interface RefreshTokenPort {
     void revokeByUserId(Long id);
 
     void revokeByEmail(String email);
+
+    void revokeByTokenHash(String tokenHash);
+
+    void revokrevokeAllByUserIdeAll(Long userId);
+
+    void revokrevokeAllByUserEmailAll(String userEmail);
 }

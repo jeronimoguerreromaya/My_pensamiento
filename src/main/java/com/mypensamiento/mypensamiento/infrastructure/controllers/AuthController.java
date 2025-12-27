@@ -5,6 +5,7 @@ import com.mypensamiento.mypensamiento.application.dto.request.LoginRequest;
 import com.mypensamiento.mypensamiento.application.dto.request.RegisterRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class AuthController {
 
     @Autowired
     RefreshUseCase refreshUseCase;
+
+    @Autowired
+    LogoutAllUseCase logoutAllUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterRequest request){
@@ -56,6 +60,12 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String refreshToken){
         AuthResponse authResponse = this.refreshUseCase.execute(refreshToken);
         return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<Void> logoutAll(@RequestHeader("Authorization") String refreshToken){
+        this.logoutAllUseCase.execute(refreshToken);
+        return ResponseEntity.ok().build();
     }
 
 }

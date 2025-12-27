@@ -3,12 +3,12 @@ package com.mypensamiento.mypensamiento.application.usecase.Auth;
 import com.mypensamiento.mypensamiento.domain.ports.RefreshTokenPort;
 import com.mypensamiento.mypensamiento.domain.ports.TokenPort;
 
-public class LogoutUseCase {
+public class LogoutAllUseCase {
 
     private final RefreshTokenPort refreshTokenPort;
     private final TokenPort tokenPort;
 
-    public LogoutUseCase(RefreshTokenPort refreshTokenPort, TokenPort tokenPort) {
+    public LogoutAllUseCase(RefreshTokenPort refreshTokenPort, TokenPort tokenPort) {
         this.refreshTokenPort = refreshTokenPort;
         this.tokenPort = tokenPort;
     }
@@ -23,7 +23,7 @@ public class LogoutUseCase {
         String userEmail = tokenPort.extractUsername(jwt);
 
         if (userEmail != null) {
-         refreshTokenPort.revokeByEmail(userEmail);
+         refreshTokenPort.revokrevokeAllByUserEmailAll(userEmail);
          }
     }
 }

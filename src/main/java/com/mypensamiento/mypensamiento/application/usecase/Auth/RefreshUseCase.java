@@ -15,20 +15,20 @@ import java.time.LocalDateTime;
 
 public class RefreshUseCase {
 
-    RefreshTokenPort refreshTokenRepository;
-    UserPort userRepository;
-    TokenPort tokenProvider;
-    HashPort hashProvider;
+    RefreshTokenPort refreshTokenPort;
+    UserPort userPort;
+    TokenPort tokenPort;
+    HashPort hashPort;
     public RefreshUseCase(
-            RefreshTokenPort refreshTokenRepository,
-            UserPort userRepository,
-            TokenPort tokenProvider,
-            HashPort hashProvider
+            RefreshTokenPort refreshTokenPort,
+            UserPort userPort,
+            TokenPort tokenPort,
+            HashPort hashPort
     ){
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.userRepository = userRepository;
-        this.tokenProvider = tokenProvider;
-        this.hashProvider = hashProvider;
+        this.refreshTokenPort = refreshTokenPort;
+        this.userPort = userPort;
+        this.tokenPort = tokenPort;
+        this.hashPort = hashPort;
     }
 
     public AuthResponse execute(String authHeader){
@@ -36,40 +36,57 @@ public class RefreshUseCase {
             throw new FieldValidationException("Invalid Bearer token");
         }
 
-        String refreshToken = authHeader.substring(7);
-        String userEmail = tokenProvider.extractUsername(refreshToken);
+        String currentRefreshToken = authHeader.substring(7);
+        String userEmail = tokenPort.extractUsername(currentRefreshToken);
 
-        if(userEmail == null || !userRepository.existsByEmail(userEmail)){
+        if(userEmail == null || !userPort.existsByEmail(userEmail)){
             throw new UnauthorizedException("Invalid token request");
         }
 
-        User user = userRepository.findByEmail(userEmail);
+        User user = userPort.findByEmail(userEmail);
 
-        if(!tokenProvider.validateToken(refreshToken, user)){
+
+        if(!tokenPort.validateToken(currentRefreshToken, user)){
             throw new UnauthorizedException("Invalid token request");
         }
 
-        String refreshTokenHash = hashProvider.hash(refreshToken);
+        String currentRefreshTokenHash = hashPort.hash(currentRefreshToken);
 
-        RefreshToken storedToken = refreshTokenRepository.findByTokenHash(refreshTokenHash);
+        RefreshToken storedToken = refreshTokenPort.findByTokenHash(currentRefreshTokenHash);
+
         if (storedToken == null) {
             throw new UnauthorizedException("Invalid token request");
         }
 
         if (storedToken.isRevoked()) {
-            refreshTokenRepository.revokeByUserId(user.getId());
+            refreshTokenPort.revokrevokeAllByUserIdeAll(user.getId());
             throw new UnauthorizedException("Security alert: Token reuse detected");
         }
 
-        storedToken.setRevoked(true);
-        refreshTokenRepository.save(storedToken);
+        if(!storedToken.isValid()){
+
+            if (storedToken.getToken_hash() != null) {
+                refreshTokenPort.revokrevokeAllByUserIdeAll(user.getId());
+                throw new UnauthorizedException("Invalid token request");
+            }
+            throw new UnauthorizedException("Invalid token request");
+        }
 
         LocalDateTime transactionTime = LocalDateTime.now();
 
-        TokenResponse accessToken = tokenProvider.generateToken(user, transactionTime);
-        TokenResponse refreshTokenSave = tokenProvider.generateRefreshToken(user, transactionTime);
+        if(transactionTime.isAfter(storedToken.getExpires_at())){
+            refreshTokenPort.revokrevokeAllByUserIdeAll(user.getId());
+            throw new UnauthorizedException("Invalid token request");
+        }
 
-        String refreshTokenHashSave = hashProvider.hash(refreshTokenSave.token());
+        TokenResponse accessToken = tokenPort.generateToken(user, transactionTime);
+        TokenResponse refreshTokenSave = tokenPort.generateRefreshToken(user, transactionTime);
+
+        String refreshTokenHashSave = hashPort.hash(refreshTokenSave.token());
+
+        storedToken.setValid(false);
+        storedToken.setReplaced_by_hash(refreshTokenHashSave);
+        refreshTokenPort.save(storedToken);
 
         RefreshToken newRefreshToken = new RefreshToken();
         newRefreshToken.setUser_id(user.getId());
@@ -77,8 +94,10 @@ public class RefreshUseCase {
         newRefreshToken.setCreated_at(transactionTime);
         newRefreshToken.setExpires_at(refreshTokenSave.expirationDate());
         newRefreshToken.setRevoked(false);
+        newRefreshToken.setValid(true);
+        newRefreshToken.setReplaced_by_hash(currentRefreshTokenHash);
 
-        refreshTokenRepository.save(newRefreshToken);
+        refreshTokenPort.save(newRefreshToken);
 
         return new AuthResponse(accessToken.token(), refreshTokenSave.token(), accessToken.expirationDate());
     }

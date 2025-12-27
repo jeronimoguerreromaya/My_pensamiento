@@ -42,4 +42,22 @@ public class RefreshTokenRepositoryAdapter implements RefreshTokenPort {
         refreshTokenJpaRepository.revokeByEmail(email);
     }
 
+    @Override
+    public void revokeByTokenHash(String tokenHash) {
+
+    }
+
+    @Override
+    @Transactional
+    public void revokrevokeAllByUserIdeAll(Long userId) {
+        refreshTokenJpaRepository.revokeAllByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void revokrevokeAllByUserEmailAll(String userEmail) {
+        refreshTokenJpaRepository.revokeAllByUserEmail(userEmail);
+    }
+
+
 }

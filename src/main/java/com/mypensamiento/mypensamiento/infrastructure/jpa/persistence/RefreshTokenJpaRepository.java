@@ -22,5 +22,14 @@ public interface RefreshTokenJpaRepository extends JpaRepository<RefreshTokenEnt
 
     Optional<RefreshTokenEntity> findByTokenHash(String tokenHash);
 
+    @Modifying
+    @Query("UPDATE RefreshTokenEntity r SET r.valid = false, r.revoked = true " +
+            "WHERE r.user.id = :userId AND (r.valid = true OR r.revoked = false)")
+    void revokeAllByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE RefreshTokenEntity r SET r.valid = false, r.revoked = true " +
+            "WHERE r.user.email = :userEmail AND (r.valid = true OR r.revoked = false)")
+    void revokeAllByUserEmail(@Param("userEmail") String userEmail);
 
 }

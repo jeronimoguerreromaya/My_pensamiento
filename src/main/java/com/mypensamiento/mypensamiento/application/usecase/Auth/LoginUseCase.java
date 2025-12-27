@@ -13,27 +13,27 @@ import java.time.LocalDateTime;
 
 public class LoginUseCase {
 
-    UserPort userRepository;
-    PasswordEncoderPort passwordEncoderRepository;
-    RefreshTokenPort refreshTokenRepository;
-    TokenPort tokenProvider;
-    AuthenticationPort authenticationRepository;
-    HashPort hashProvider;
+    UserPort userPort;
+    PasswordEncoderPort passwordEncoderPort;
+    RefreshTokenPort refreshTokenPort;
+    TokenPort tokenPort;
+    AuthenticationPort authenticationPort;
+    HashPort hashPort;
 
     public LoginUseCase(
-            UserPort userRepository,
-            PasswordEncoderPort passwordEncoderRepository,
-            RefreshTokenPort refreshTokenRepository,
-            TokenPort tokenProvider,
-            AuthenticationPort authenticationRepository,
-            HashPort hashProvider
+            UserPort userPort,
+            PasswordEncoderPort passwordEncoderPort,
+            RefreshTokenPort refreshTokenPort,
+            TokenPort tokenPort,
+            AuthenticationPort authenticationPort,
+            HashPort hashPort
     ) {
-        this.userRepository = userRepository;
-        this.passwordEncoderRepository = passwordEncoderRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.tokenProvider = tokenProvider;
-        this.authenticationRepository = authenticationRepository;
-        this.hashProvider = hashProvider;
+        this.userPort = userPort;
+        this.passwordEncoderPort = passwordEncoderPort;
+        this.refreshTokenPort = refreshTokenPort;
+        this.tokenPort = tokenPort;
+        this.authenticationPort = authenticationPort;
+        this.hashPort = hashPort;
     }
 
     public AuthResponse execute(LoginRequest request){
@@ -42,23 +42,23 @@ public class LoginUseCase {
             throw new FieldValidationException("Email and Password are required" + " to login");
         }
 
-        if(!userRepository.existsByEmail(request.email())){
+        if(!userPort.existsByEmail(request.email())){
             throw new NotFoundException("Email no found");
         }
 
-        authenticationRepository.authenticate(
+        authenticationPort.authenticate(
                 request.email(),
                 request.password()
         );
 
         LocalDateTime transactionTime = LocalDateTime.now();
 
-        User userSave = userRepository.findByEmail(request.email());
+        User userSave = userPort.findByEmail(request.email());
 
-        TokenResponse accessToken = tokenProvider.generateToken(userSave,transactionTime);
-        TokenResponse refreshToken = tokenProvider.generateRefreshToken(userSave,transactionTime);
+        TokenResponse accessToken = tokenPort.generateToken(userSave,transactionTime);
+        TokenResponse refreshToken = tokenPort.generateRefreshToken(userSave,transactionTime);
 
-        String refreshTokenHash = hashProvider.hash(accessToken.token());
+        String refreshTokenHash = hashPort.hash(refreshToken.token());
 
         RefreshToken refreshTokenSave = new RefreshToken();
             refreshTokenSave.setUser_id(userSave.getId());
@@ -66,8 +66,9 @@ public class LoginUseCase {
             refreshTokenSave.setCreated_at(transactionTime);
             refreshTokenSave.setExpires_at(refreshToken.expirationDate());
             refreshTokenSave.setRevoked(false);
+            refreshTokenSave.setValid(true);
 
-        refreshTokenRepository.save(refreshTokenSave);
+        refreshTokenPort.save(refreshTokenSave);
 
         return new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
     }
