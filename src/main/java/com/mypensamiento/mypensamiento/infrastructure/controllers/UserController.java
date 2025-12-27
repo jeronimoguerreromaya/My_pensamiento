@@ -2,7 +2,6 @@ package com.mypensamiento.mypensamiento.infrastructure.controllers;
 
 import com.mypensamiento.mypensamiento.application.dto.request.UpdatePasswordRequest;
 import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
-import com.mypensamiento.mypensamiento.application.usecase.user.SaveUserUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdatePasswordUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.infrastructure.dto.ApiResponse;
@@ -19,9 +18,6 @@ import org.slf4j.LoggerFactory;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
-    @Autowired
-    private SaveUserUseCase saveUserUseCase;
 
     @Autowired
     private UpdateUserPatchUseCase updateUserPatchUseCase;
@@ -67,27 +63,5 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
-    @PostMapping("/save")
-    public ResponseEntity<ApiResponse<String>> createUserAccount (
-            @Validated @RequestBody UserRequest request
-            ){
-        try {
-            logger.info("Starting saveUser with request: {}", request);
-            this.saveUserUseCase.execute(request);
-            logger.info("User saved successfully");
-        } catch (Exception e) {
-            logger.error("Error in saveUser: ", e);
-            throw e;
-        }
-
-        ApiResponse<String> response = new ApiResponse<>(
-                HttpStatus.CREATED.value(),
-                "Usuario registrado correctamente",
-                request.nickname()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
 }

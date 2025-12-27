@@ -1,21 +1,20 @@
-package com.mypensamiento.mypensamiento.domain.repository;
+package com.mypensamiento.mypensamiento.domain.ports;
 
 import com.mypensamiento.mypensamiento.domain.model.User;
 
-import java.util.Optional;
+public interface UserPort {
 
-public interface UserRepository {
-
-    void save(User user);
+    User save(User user);
 
     User getById(Long id);
+
+    User findByEmail(String email);
 
     Boolean existsById(Long id);
 
     Boolean existsByEmail(String email);
 
     Boolean existsByNickname(String nickname);
-
 
 
 }

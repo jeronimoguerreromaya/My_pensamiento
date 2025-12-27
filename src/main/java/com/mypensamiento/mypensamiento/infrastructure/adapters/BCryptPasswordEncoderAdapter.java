@@ -1,9 +1,9 @@
 package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
-import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
+import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class BCryptPasswordEncoderJpaAdapter implements PasswordEncoderRepository {
+public class BCryptPasswordEncoderAdapter implements PasswordEncoderPort {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 

@@ -4,15 +4,15 @@ import com.mypensamiento.mypensamiento.application.dto.request.UpdatePasswordReq
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.User;
-import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 
 public class UpdatePasswordUseCase {
 
-    UserRepository userRepository;
-    PasswordEncoderRepository passwordEncoderRepository;
+    UserPort userRepository;
+    PasswordEncoderPort passwordEncoderRepository;
 
-    public UpdatePasswordUseCase(UserRepository userRepository, PasswordEncoderRepository passwordEncoderRepository) {
+    public UpdatePasswordUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository) {
         this.userRepository = userRepository;
         this.passwordEncoderRepository = passwordEncoderRepository;
     }

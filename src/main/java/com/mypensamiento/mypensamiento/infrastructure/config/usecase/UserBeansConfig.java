@@ -1,11 +1,9 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
-import com.mypensamiento.mypensamiento.application.usecase.user.SaveUserUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdatePasswordUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
-import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
-import com.mypensamiento.mypensamiento.infrastructure.adapters.BCryptPasswordEncoderJpaAdapter;
+import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,20 +11,12 @@ import org.springframework.context.annotation.Configuration;
 public class UserBeansConfig {
 
     @Bean
-    public SaveUserUseCase saveUserUseCase(
-            UserRepository userRepository,
-            PasswordEncoderRepository passwordEncoderRepository
-    ){
-        return new SaveUserUseCase(userRepository, passwordEncoderRepository);
-    }
-
-    @Bean
-    public UpdateUserPatchUseCase updateUserPatchUseCase(UserRepository userRepository, PasswordEncoderRepository passwordEncoderRepository){
+    public UpdateUserPatchUseCase updateUserPatchUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository){
         return new UpdateUserPatchUseCase(userRepository, passwordEncoderRepository);
     }
 
     @Bean
-    public UpdatePasswordUseCase updatePasswordUseCase(UserRepository userRepository, PasswordEncoderRepository passwordEncoderRepository){
+    public UpdatePasswordUseCase updatePasswordUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository){
         return new UpdatePasswordUseCase(userRepository, passwordEncoderRepository);
     }
 }

@@ -1,18 +1,18 @@
 package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
 import com.mypensamiento.mypensamiento.domain.model.Thought;
-import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
+import com.mypensamiento.mypensamiento.domain.ports.ThoughtPort;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.mappers.ThoughMapper;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.ThoughtEntity;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.persistence.ThoughtJpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ThoughtRepositoryJpaAdapter implements ThoughtRepository {
+public class ThoughtRepositoryAdapter implements ThoughtPort {
 
     private final ThoughtJpaRepository thoughtJpaRepository;
 
-    public ThoughtRepositoryJpaAdapter(ThoughtJpaRepository thoughtJpaRepository) {
+    public ThoughtRepositoryAdapter(ThoughtJpaRepository thoughtJpaRepository) {
         this.thoughtJpaRepository = thoughtJpaRepository;
     }
 

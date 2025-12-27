@@ -6,10 +6,11 @@ public class RefreshToken {
 
     private Long id;
     private Long user_id;
-    private String token;
+    private String token_hash;
     private LocalDateTime created_at;
     private LocalDateTime expires_at;
     private boolean revoked;
+    private String replaced_by_hash;
 
     public RefreshToken() {}
 
@@ -30,11 +31,11 @@ public class RefreshToken {
     }
 
     public String getToken() {
-        return token;
+        return token_hash;
     }
 
     public void setToken(String token) {
-        this.token = token;
+        this.token_hash = token;
     }
 
     public LocalDateTime getCreated_at() {

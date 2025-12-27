@@ -3,15 +3,15 @@ package com.mypensamiento.mypensamiento.application.usecase.user;
 import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.User;
-import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 
 public class UpdateUserPatchUseCase {
 
-    UserRepository userRepository;
-    PasswordEncoderRepository passwordEncoderRepository;
+    UserPort userRepository;
+    PasswordEncoderPort passwordEncoderRepository;
 
-    public UpdateUserPatchUseCase(UserRepository userRepository, PasswordEncoderRepository passwordEncoderRepository) {
+    public UpdateUserPatchUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository) {
         this.userRepository = userRepository;
         this.passwordEncoderRepository = passwordEncoderRepository;
     }

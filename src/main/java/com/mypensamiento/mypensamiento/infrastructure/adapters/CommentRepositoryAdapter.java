@@ -1,7 +1,7 @@
 package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
 import com.mypensamiento.mypensamiento.domain.model.Comment;
-import com.mypensamiento.mypensamiento.domain.repository.CommentRepository;
+import com.mypensamiento.mypensamiento.domain.ports.CommentPort;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.mappers.CommentMapper;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.CommentEntity;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.ThoughtEntity;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class CommentRepositoryJpaAdapter implements CommentRepository {
+public class CommentRepositoryAdapter implements CommentPort {
 
     private final CommentJpaRepository commentJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final ThoughtJpaRepository thoughtJpaRepository;
 
 
-    public CommentRepositoryJpaAdapter(CommentJpaRepository commentJpaRepository, UserJpaRepository userJpaRepository, ThoughtJpaRepository thoughtJpaRepository) {
+    public CommentRepositoryAdapter(CommentJpaRepository commentJpaRepository, UserJpaRepository userJpaRepository, ThoughtJpaRepository thoughtJpaRepository) {
         this.commentJpaRepository = commentJpaRepository;
         this.userJpaRepository = userJpaRepository;
         this.thoughtJpaRepository = thoughtJpaRepository;

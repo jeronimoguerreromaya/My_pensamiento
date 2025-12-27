@@ -1,0 +1,89 @@
+package com.mypensamiento.mypensamiento.application.usecase.Auth;
+
+import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterRequest;
+import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
+import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
+import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
+import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
+import com.mypensamiento.mypensamiento.domain.model.User;
+import com.mypensamiento.mypensamiento.domain.model.categorie.Role;
+import com.mypensamiento.mypensamiento.domain.ports.*;
+import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+
+import java.time.LocalDateTime;
+
+public class RegisterUseCase {
+
+    UserPort userRepository;
+    PasswordEncoderPort passwordEncoderRepository;
+    RefreshTokenPort refreshTokenRepository;
+    TokenPort tokenProvider;
+    HashPort hashProvider;
+    public RegisterUseCase(
+            UserPort userRepository,
+            PasswordEncoderPort passwordEncoderRepository,
+            RefreshTokenPort refreshTokenRepository,
+            TokenPort tokenProvider,
+            HashPort hashProvider
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoderRepository = passwordEncoderRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenProvider = tokenProvider;
+        this.hashProvider = hashProvider;
+    }
+    public AuthResponse execute(RegisterRequest request) {
+
+        if (request.nickname() == null || request.nickname().isEmpty() ||
+                request.email() == null || request.email().isEmpty() ||
+                request.password() == null || request.password().isEmpty()) {
+            throw new FieldValidationException("Some Fields are required");
+        }
+        if (userRepository.existsByNickname(request.nickname())) {
+            throw new NickNameAlreadyExistsException("Nickname " + request.nickname() + " already exists");
+        }
+        if (userRepository.existsByEmail(request.email())) {
+            throw new EmailAlreadyExistsException("Email " + request.email() + " already exists");
+        }
+
+        LocalDateTime transactionTime = LocalDateTime.now();
+
+        User user = new User()
+                .setNickname(request.nickname())
+                .setEmail(request.email())
+                .setPassword(passwordEncoderRepository.encode(request.password()))
+                .setStatus(Boolean.TRUE)
+                .setRole(Role.USER)
+                .setCreated_at(transactionTime);
+
+        if (request.full_name() != null && !request.full_name().isEmpty()) {
+            user.setFull_name(request.full_name());
+        }
+        if (request.bio() != null && !request.bio().isEmpty()) {
+            user.setBio(request.bio());
+        }
+        if (request.profile_picture() != null && !request.profile_picture().isEmpty() && !"null".equals(request.profile_picture())) {
+            user.setProfile_picture(request.profile_picture());
+        }
+
+        User userSave = userRepository.save(user);
+
+        TokenResponse accessToken = tokenProvider.generateToken(userSave,transactionTime);
+        TokenResponse refreshToken = tokenProvider.generateRefreshToken(userSave,transactionTime);
+
+        String refreshTokenHash = hashProvider.hash(accessToken.token());
+
+        RefreshToken refreshTokenSave = new RefreshToken();
+            refreshTokenSave.setUser_id(userSave.getId());
+            refreshTokenSave.setToken(refreshTokenHash);
+            refreshTokenSave.setCreated_at(transactionTime);
+            refreshTokenSave.setExpires_at(refreshToken.expirationDate());
+            refreshTokenSave.setRevoked(false);
+
+        refreshTokenRepository.save(refreshTokenSave);
+
+       return new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
+    }
+
+}

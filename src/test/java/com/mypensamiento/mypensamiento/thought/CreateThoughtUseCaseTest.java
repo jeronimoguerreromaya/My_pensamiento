@@ -3,17 +3,14 @@ package com.mypensamiento.mypensamiento.thought;
 import com.mypensamiento.mypensamiento.application.dto.request.CreateThoughtRequest;
 import com.mypensamiento.mypensamiento.application.usecase.thought.CreateThoughtUseCase;
 import com.mypensamiento.mypensamiento.domain.model.Thought;
-import com.mypensamiento.mypensamiento.domain.model.User;
-import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.ThoughtPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,10 +20,10 @@ import static org.mockito.Mockito.*;
 public class CreateThoughtUseCaseTest {
 
     @Mock
-    private ThoughtRepository thoughtRepository;
+    private ThoughtPort thoughtRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private UserPort userRepository;
 
     @InjectMocks
     private CreateThoughtUseCase createThoughtUseCase;

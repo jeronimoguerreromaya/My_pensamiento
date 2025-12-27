@@ -24,7 +24,7 @@ public class RefreshTokenEntity {
     private UserEntity user;
 
     @Column(nullable = false, unique = true)
-    private String token;
+    private String tokenHash;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -34,6 +34,8 @@ public class RefreshTokenEntity {
 
     @Column(nullable = false)
     private boolean revoked;
+
+    private String replaced_by_hash;
 
     public RefreshTokenEntity() {
     }
@@ -55,11 +57,11 @@ public class RefreshTokenEntity {
     }
 
     public String getToken() {
-        return token;
+        return tokenHash;
     }
 
     public void setToken(String token) {
-        this.token = token;
+        this.tokenHash = token;
     }
 
     public LocalDateTime getCreatedAt() {

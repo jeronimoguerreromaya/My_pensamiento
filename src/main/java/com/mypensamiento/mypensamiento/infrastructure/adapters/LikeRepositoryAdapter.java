@@ -1,8 +1,7 @@
 package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
 import com.mypensamiento.mypensamiento.domain.model.Like;
-import com.mypensamiento.mypensamiento.domain.model.User;
-import com.mypensamiento.mypensamiento.domain.repository.LikeRepository;
+import com.mypensamiento.mypensamiento.domain.ports.LikePort;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.mappers.LikeMapper;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.LikeEntity;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.ThoughtEntity;
@@ -13,12 +12,12 @@ import com.mypensamiento.mypensamiento.infrastructure.jpa.persistence.UserJpaRep
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class LikeRepositoryJpaAdapter implements LikeRepository {
+public class LikeRepositoryAdapter implements LikePort {
 
     private final LikeJpaRepository likeJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final ThoughtJpaRepository thoughtJpaRepository;
-    public LikeRepositoryJpaAdapter(LikeJpaRepository likeJpaRepository, UserJpaRepository userJpaRepository, ThoughtJpaRepository thoughtJpaRepository) {
+    public LikeRepositoryAdapter(LikeJpaRepository likeJpaRepository, UserJpaRepository userJpaRepository, ThoughtJpaRepository thoughtJpaRepository) {
         this.likeJpaRepository = likeJpaRepository;
         this.userJpaRepository = userJpaRepository;
         this.thoughtJpaRepository = thoughtJpaRepository;

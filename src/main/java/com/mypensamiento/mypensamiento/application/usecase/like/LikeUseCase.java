@@ -3,18 +3,18 @@ package com.mypensamiento.mypensamiento.application.usecase.like;
 import com.mypensamiento.mypensamiento.application.dto.request.LikeRequest;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.Like;
-import com.mypensamiento.mypensamiento.domain.repository.LikeRepository;
-import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.LikePort;
+import com.mypensamiento.mypensamiento.domain.ports.ThoughtPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 
 import java.time.LocalDateTime;
 
 public class LikeUseCase {
-    private final LikeRepository likeRepository;
-    private final UserRepository userRepository;
-    private final ThoughtRepository thoughtRepository;
+    private final LikePort likeRepository;
+    private final UserPort userRepository;
+    private final ThoughtPort thoughtRepository;
 
-    public LikeUseCase(LikeRepository likeRepository, UserRepository userRepository, ThoughtRepository thoughtRepository) {
+    public LikeUseCase(LikePort likeRepository, UserPort userRepository, ThoughtPort thoughtRepository) {
         this.likeRepository = likeRepository;
         this.userRepository = userRepository;
         this.thoughtRepository = thoughtRepository;

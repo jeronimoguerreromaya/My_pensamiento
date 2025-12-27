@@ -3,9 +3,8 @@ package com.mypensamiento.mypensamiento.user;
 import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.domain.model.User;
-import com.mypensamiento.mypensamiento.domain.model.categorie.Role;
-import com.mypensamiento.mypensamiento.domain.repository.PasswordEncoderRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -19,10 +18,10 @@ import static org.mockito.Mockito.*;
 public class UpdateUserPatchUseCaseTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserPort userRepository;
 
     @Mock
-    private PasswordEncoderRepository passwordEncoderRepository;
+    private PasswordEncoderPort passwordEncoderRepository;
 
     @InjectMocks
     private UpdateUserPatchUseCase updateUserPatchUseCase;

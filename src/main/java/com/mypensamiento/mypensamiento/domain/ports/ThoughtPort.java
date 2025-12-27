@@ -1,8 +1,8 @@
-package com.mypensamiento.mypensamiento.domain.repository;
+package com.mypensamiento.mypensamiento.domain.ports;
 
 import com.mypensamiento.mypensamiento.domain.model.Thought;
 
-public interface ThoughtRepository {
+public interface ThoughtPort {
 
     void save(Thought thought);
 

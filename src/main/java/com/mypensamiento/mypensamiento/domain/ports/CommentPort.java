@@ -1,8 +1,8 @@
-package com.mypensamiento.mypensamiento.domain.repository;
+package com.mypensamiento.mypensamiento.domain.ports;
 
 import com.mypensamiento.mypensamiento.domain.model.Comment;
 
-public interface CommentRepository {
+public interface CommentPort {
 
      void save(Comment comment);
 

@@ -4,18 +4,18 @@ import com.mypensamiento.mypensamiento.application.dto.request.CommentThoughtReq
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.Comment;
-import com.mypensamiento.mypensamiento.domain.repository.CommentRepository;
-import com.mypensamiento.mypensamiento.domain.repository.ThoughtRepository;
-import com.mypensamiento.mypensamiento.domain.repository.UserRepository;
+import com.mypensamiento.mypensamiento.domain.ports.CommentPort;
+import com.mypensamiento.mypensamiento.domain.ports.ThoughtPort;
+import com.mypensamiento.mypensamiento.domain.ports.UserPort;
 
 import java.time.LocalDateTime;
 
 public class CommentThoughtUseCase {
-    private CommentRepository commentRepository;
-    private UserRepository userRepository;
-    private ThoughtRepository thoughtRepository;
+    private CommentPort commentRepository;
+    private UserPort userRepository;
+    private ThoughtPort thoughtRepository;
 
-    public CommentThoughtUseCase(CommentRepository commentRepository, UserRepository userRepository, ThoughtRepository thoughtRepository) {
+    public CommentThoughtUseCase(CommentPort commentRepository, UserPort userRepository, ThoughtPort thoughtRepository) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.thoughtRepository = thoughtRepository;
