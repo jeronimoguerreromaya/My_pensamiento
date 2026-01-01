@@ -2,15 +2,13 @@ package com.mypensamiento.mypensamiento.infrastructure.controllers;
 
 
 import com.mypensamiento.mypensamiento.application.dto.request.LoginRequest;
-import com.mypensamiento.mypensamiento.application.dto.request.RegisterRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +30,7 @@ public class AuthController {
     LogoutAllUseCase logoutAllUseCase;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterRequest request){
+    public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterUserRequest request){
         AuthResponse authResponse = this.registerUseCase.execute(request);
 
        /*   Http-only

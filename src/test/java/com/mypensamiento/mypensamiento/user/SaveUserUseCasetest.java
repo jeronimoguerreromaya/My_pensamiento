@@ -1,6 +1,6 @@
 package com.mypensamiento.mypensamiento.user;
 
-import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
@@ -32,7 +32,7 @@ public class SaveUserUseCasetest {
         //shouldThrowExceptionWhenNicknameIsEmpty
     void saveUser_WhenNickNameIsEmpty_ShouldThrowExceptionn() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "",
                 "test@example.com",
                 "password123",
@@ -52,7 +52,7 @@ public class SaveUserUseCasetest {
     @Test
     void saveUser_WhenUserIsNew_ShouldSaveSuccessfully() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "testuser",
                 "test@example.com",
                 "password123",
@@ -86,7 +86,7 @@ public class SaveUserUseCasetest {
     @Test
     void saveUser_WhenEmailIsEmpty_ShouldThrowExceptionn() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "testuser",
                 "",
                 "password123",
@@ -103,7 +103,7 @@ public class SaveUserUseCasetest {
     @Test
     void saveUser_WhenPasswordIsEmpty_ShouldThrowExceptionn() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "testuser",
                 "test@example.com",
                 "",
@@ -120,7 +120,7 @@ public class SaveUserUseCasetest {
     @Test
     void saveUSer_WhenNickNameAlreadyExists_ShouldNickNameAlreadyExistsException() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "existinguser",
                 "test@example.com",
                 "password123",
@@ -139,7 +139,7 @@ public class SaveUserUseCasetest {
     @Test
     void saveUSer_WhenEmailAlreadyExists_ShouldEmailAlreadyExistsException() {
         // Arrange
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "testuser",
                 "existing@example.com",
                 "password123",

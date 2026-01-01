@@ -3,6 +3,7 @@ package com.mypensamiento.mypensamiento.infrastructure.config;
 import com.mypensamiento.mypensamiento.domain.ports.HashPort;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.entity.UserEntity;
 import com.mypensamiento.mypensamiento.infrastructure.jpa.persistence.UserJpaRepository;
+import com.mypensamiento.mypensamiento.infrastructure.security.UserPrincipal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,11 +32,7 @@ public class AppConfig {
                             "User not found" + username
                     ));
 
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(userEntity.getEmail())
-                    .password(userEntity.getPassword())
-                    .authorities(userEntity.getRole().name())
-                    .build();
+            return UserPrincipal.build(userEntity);
         };
     }
 

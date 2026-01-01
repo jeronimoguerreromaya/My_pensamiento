@@ -1,6 +1,6 @@
 package com.mypensamiento.mypensamiento.user;
 
-import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
@@ -30,7 +30,7 @@ public class UpdateUserPatchUseCaseTest {
     void updateUser_whenUserExist_shouldUpdateSuccessfully() {
         // Arrange
         Long id = 1L;
-        UserRequest request = new UserRequest(
+        RegisterUserRequest request = new RegisterUserRequest(
                 "nickNameUpdate",
                 "upt@gmail.com",
                 "1234",

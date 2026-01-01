@@ -1,13 +1,18 @@
 package com.mypensamiento.mypensamiento.infrastructure.controllers;
 
 import com.mypensamiento.mypensamiento.application.dto.request.UpdatePasswordRequest;
-import com.mypensamiento.mypensamiento.application.dto.request.UserRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.UpdateUserProfileRequest;
+import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdatePasswordUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.infrastructure.dto.ApiResponse;
+import com.mypensamiento.mypensamiento.infrastructure.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -25,33 +30,32 @@ public class UserController {
     @Autowired
     private UpdatePasswordUseCase updatePasswordUseCase;
 
-    @PatchMapping("updatepassword/{id}")
-    public ResponseEntity<ApiResponse<String>> updatePassword (
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("update/password")
+    public ResponseEntity<AuthResponse> updatePassword (
             @Validated @RequestBody UpdatePasswordRequest request,
-            @PathVariable Long id
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ){
+        Long id = userPrincipal.getUserId();
 
         logger.info("Starting updatePassword for user id: {}", id);
-        this.updatePasswordUseCase.execute(request,id);
+        AuthResponse authResponse = this.updatePasswordUseCase.execute(request,id);
         logger.info("Password updated successfully for user id: {}", id);
 
-        ApiResponse<String> response = new ApiResponse<>(
-                HttpStatus.OK.value(),
-                "Contraseña actualizada correctamente"
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(authResponse);
     }
 
-
-    @PatchMapping("/update/{id}")
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/update/me")
     public ResponseEntity<ApiResponse<String>> updateUserAccount (
-            @Validated @RequestBody UserRequest request,
-            @PathVariable Long id
+            @Validated @RequestBody UpdateUserProfileRequest request,
+            @AuthenticationPrincipal UserPrincipal userPrincipal
     ){
+        Long userId = userPrincipal.getUserId();
 
-        logger.info("Starting updateUser: {} " , request.nickname());
-        this.updateUserPatchUseCase.execute(request, id);
+        logger.info("User authenticated with ID: {}", userId);
+
+        this.updateUserPatchUseCase.execute(request, userId);
         logger.info("User updated successfully");
 
         ApiResponse<String> response = new ApiResponse<>(
@@ -62,6 +66,7 @@ public class UserController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 
 
 }

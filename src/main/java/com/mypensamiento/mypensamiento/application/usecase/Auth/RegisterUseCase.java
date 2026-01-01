@@ -1,7 +1,7 @@
 package com.mypensamiento.mypensamiento.application.usecase.Auth;
 
+import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
-import com.mypensamiento.mypensamiento.application.dto.request.RegisterRequest;
 import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
@@ -33,7 +33,7 @@ public class RegisterUseCase {
         this.tokenPort = tokenPort;
         this.hashPort = hashPort;
     }
-    public AuthResponse execute(RegisterRequest request) {
+    public AuthResponse execute(RegisterUserRequest request) {
 
         if (request.nickname() == null || request.nickname().isEmpty() ||
                 request.email() == null || request.email().isEmpty() ||

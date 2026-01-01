@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,10 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -34,8 +37,17 @@ public class JwtService {
     private Duration refreshExpiration;
 
     public TokenResponse generateToken(UserDetails userDetails, LocalDateTime transactionTime) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        claims.put("roles", roles);
+
         return buildToken(
-                new HashMap<>(),
+                claims,
                 userDetails,
                 transactionTime,
                 accessExpiration.toMillis()
@@ -43,8 +55,17 @@ public class JwtService {
     }
 
     public TokenResponse generateRefreshToken(UserDetails userDetails, LocalDateTime transactionTime) {
-         return buildToken(
-                 new HashMap<>(),
+
+        Map<String, Object> claims = new HashMap<>();
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        claims.put("roles", roles);
+
+        return buildToken(
+                claims,
                  userDetails,
                  transactionTime,
                  refreshExpiration.toMillis()

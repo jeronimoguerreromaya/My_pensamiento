@@ -2,8 +2,7 @@ package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdatePasswordUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
-import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
-import com.mypensamiento.mypensamiento.domain.ports.UserPort;
+import com.mypensamiento.mypensamiento.domain.ports.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +15,19 @@ public class UserBeansConfig {
     }
 
     @Bean
-    public UpdatePasswordUseCase updatePasswordUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository){
-        return new UpdatePasswordUseCase(userRepository, passwordEncoderRepository);
+    public UpdatePasswordUseCase updatePasswordUseCase(
+            UserPort userRepository,
+            PasswordEncoderPort passwordEncoderRepository,
+            TokenPort tokenPort,
+            HashPort hashPort,
+            RefreshTokenPort refreshTokenPort
+    ){
+        return new UpdatePasswordUseCase(
+                userRepository,
+                passwordEncoderRepository,
+                tokenPort,
+                hashPort,
+                refreshTokenPort
+        );
     }
 }

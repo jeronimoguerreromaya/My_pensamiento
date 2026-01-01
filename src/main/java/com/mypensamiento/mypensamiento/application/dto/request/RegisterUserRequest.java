@@ -1,6 +1,8 @@
 package com.mypensamiento.mypensamiento.application.dto.request;
 
-public record RegisterRequest(
+
+public record RegisterUserRequest(
+
         String nickname,
         String email,
         String password,
