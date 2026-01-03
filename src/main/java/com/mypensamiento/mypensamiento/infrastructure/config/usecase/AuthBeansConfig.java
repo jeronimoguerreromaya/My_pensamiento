@@ -22,6 +22,7 @@ public class AuthBeansConfig {
             TokenPort tokenPort,
             HashPort hashPort
 
+
     ){
         return new RegisterUseCase(userPort,passwordEncoderPort,refreshTokenPort,tokenPort,hashPort);
     }

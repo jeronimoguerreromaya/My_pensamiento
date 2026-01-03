@@ -20,18 +20,22 @@ public class RegisterUseCase {
     RefreshTokenPort refreshTokenPort;
     TokenPort tokenPort;
     HashPort hashPort;
+
+
     public RegisterUseCase(
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             RefreshTokenPort refreshTokenPort,
             TokenPort tokenPort,
             HashPort hashPort
+
     ) {
         this.userPort = userPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.refreshTokenPort = refreshTokenPort;
         this.tokenPort = tokenPort;
         this.hashPort = hashPort;
+
     }
     public AuthResponse execute(RegisterUserRequest request) {
 
@@ -40,11 +44,14 @@ public class RegisterUseCase {
                 request.password() == null || request.password().isEmpty()) {
             throw new FieldValidationException("Some Fields are required");
         }
-        if (userPort.existsByNickname(request.nickname())) {
-            throw new NickNameAlreadyExistsException("Nickname " + request.nickname() + " already exists");
+
+
+
+        if(userPort.existsByEmail(request.email())){
+            throw new EmailAlreadyExistsException("Email already exists");
         }
-        if (userPort.existsByEmail(request.email())) {
-            throw new EmailAlreadyExistsException("Email " + request.email() + " already exists");
+        if(userPort.existsByNickname(request.nickname())){
+            throw new NickNameAlreadyExistsException("Nickname already exists");
         }
 
         LocalDateTime transactionTime = LocalDateTime.now();

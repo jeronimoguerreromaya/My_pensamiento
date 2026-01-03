@@ -1,6 +1,5 @@
 package com.mypensamiento.mypensamiento.application.usecase.user;
 
-import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.dto.request.UpdateUserProfileRequest;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.domain.model.User;
@@ -12,9 +11,11 @@ public class UpdateUserPatchUseCase {
     UserPort userRepository;
     PasswordEncoderPort passwordEncoderRepository;
 
+
     public UpdateUserPatchUseCase(UserPort userRepository, PasswordEncoderPort passwordEncoderRepository) {
         this.userRepository = userRepository;
         this.passwordEncoderRepository = passwordEncoderRepository;
+
     }
 
     public void execute(UpdateUserProfileRequest request, Long id) {
@@ -26,7 +27,7 @@ public class UpdateUserPatchUseCase {
         }
 
         if (request.nickname() != null && !request.nickname().isEmpty()) {
-            if (!userRepository.existsByNickname(request.nickname())) {
+            if (!update.getNickname().equals(request.nickname())) {
                 update.setNickname(request.nickname());
             }
         }

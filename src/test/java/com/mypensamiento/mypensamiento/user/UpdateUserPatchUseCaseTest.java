@@ -1,6 +1,5 @@
 package com.mypensamiento.mypensamiento.user;
 
-import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.PasswordEncoderPort;
@@ -13,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.*;
+
+import com.mypensamiento.mypensamiento.application.dto.request.UpdateUserProfileRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class UpdateUserPatchUseCaseTest {
@@ -30,10 +31,8 @@ public class UpdateUserPatchUseCaseTest {
     void updateUser_whenUserExist_shouldUpdateSuccessfully() {
         // Arrange
         Long id = 1L;
-        RegisterUserRequest request = new RegisterUserRequest(
+        UpdateUserProfileRequest request = new UpdateUserProfileRequest(
                 "nickNameUpdate",
-                "upt@gmail.com",
-                "1234",
                 "full_name_upt",
                 "update bio",
                 "upt.jpg"
@@ -51,6 +50,7 @@ public class UpdateUserPatchUseCaseTest {
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         when(userRepository.getById(id)).thenReturn(mockUser);
 
+
         // Act
         updateUserPatchUseCase.execute(request, 1L);
 
@@ -62,7 +62,6 @@ public class UpdateUserPatchUseCaseTest {
         User captorUser = userArgumentCaptor.getValue();
 
         assert captorUser.getNickname().equals("nickNameUpdate");
-        assert captorUser.getEmail().equals("upt@gmail.com");
         assert captorUser.getFull_name().equals("full_name_upt");
         assert captorUser.getBio().equals("update bio");
         assert captorUser.getProfile_picture().equals("upt.jpg");
