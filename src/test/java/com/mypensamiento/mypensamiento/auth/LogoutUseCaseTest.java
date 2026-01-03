@@ -1,7 +1,7 @@
 package com.mypensamiento.mypensamiento.auth;
 
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutUseCase;
 import com.mypensamiento.mypensamiento.domain.ports.RefreshTokenPort;
 import com.mypensamiento.mypensamiento.domain.ports.TokenPort;
 import org.junit.jupiter.api.Test;
@@ -10,13 +10,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoInteractions;
+
 
 @ExtendWith(MockitoExtension.class)
-public class LogoutAllUseCaseTest {
+public class LogoutUseCaseTest {
 
     @Mock
     RefreshTokenPort refreshTokenPort;
@@ -25,7 +25,7 @@ public class LogoutAllUseCaseTest {
     TokenPort tokenPort;
 
     @InjectMocks
-    LogoutAllUseCase logoutAllUseCase;
+    LogoutUseCase logoutUseCase;
 
     @Test
     void execute_whenHeaderIsValid_shouldInvalidateRefreshToken() {
@@ -37,10 +37,10 @@ public class LogoutAllUseCaseTest {
         when(tokenPort.extractUsername(jwt)).thenReturn(userEmail);
 
         //Act-Assert
-        logoutAllUseCase.execute(authHeader);
+        logoutUseCase.execute(authHeader);
 
         verify(tokenPort,times(1)).extractUsername(jwt);
-        verify(refreshTokenPort,times(1)).revokrevokeAllByUserEmailAll(userEmail);
+        verify(refreshTokenPort,times(1)).revokeByEmail(userEmail);
 
     }
 
@@ -51,9 +51,8 @@ public class LogoutAllUseCaseTest {
 
         // Act & Assert
         FieldValidationException exception = assertThrows(FieldValidationException.class, () -> {
-            logoutAllUseCase.execute(authHeader);
+            logoutUseCase.execute(authHeader);
         });
-
 
         assertEquals("Invalid Bearer token", exception.getMessage());
 
@@ -62,3 +61,4 @@ public class LogoutAllUseCaseTest {
     }
 
 }
+
