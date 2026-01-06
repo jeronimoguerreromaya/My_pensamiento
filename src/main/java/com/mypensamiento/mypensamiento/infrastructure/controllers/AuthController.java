@@ -8,6 +8,9 @@ import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.SendCodeUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.VerifyCodeUseCase;
+import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +31,12 @@ public class AuthController {
 
     @Autowired
     LogoutAllUseCase logoutAllUseCase;
+
+    @Autowired
+    SendCodeUseCase requestPasswordResetUseCase;
+
+    @Autowired
+    VerifyCodeUseCase verifyCodeUseCase;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterUserRequest request){
@@ -64,6 +73,20 @@ public class AuthController {
     public ResponseEntity<Void> logoutAll(@RequestHeader("Authorization") String refreshToken){
         this.logoutAllUseCase.execute(refreshToken);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/r/{email}")
+    public ResponseEntity<AuthResponse> r(@Validated @PathVariable String email){
+        this.requestPasswordResetUseCase.execute(email);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @PostMapping("/v/{opt}/{email}")
+    public ResponseEntity<TokenResponse> r(@Validated @PathVariable String opt, @Validated @PathVariable String email){
+        TokenResponse authResponse= this.verifyCodeUseCase.execute(opt,email);
+        return ResponseEntity.ok(authResponse);
+
     }
 
 }

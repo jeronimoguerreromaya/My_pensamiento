@@ -1,6 +1,8 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
 import com.mypensamiento.mypensamiento.application.usecase.Auth.*;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.SendCodeUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.VerifyCodeUseCase;
 import com.mypensamiento.mypensamiento.domain.ports.*;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.BCryptPasswordEncoderAdapter;
 import com.mypensamiento.mypensamiento.infrastructure.adapters.JwtAdapte;
@@ -13,6 +15,25 @@ import org.springframework.security.authentication.AuthenticationManager;
 @Configuration
 public class AuthBeansConfig {
 
+    @Bean
+    public VerifyCodeUseCase verifyCodeUseCase(
+            PasswordResetCodePort passwordResetCodePort,
+            HashPort hashPort,
+            UserPort userPort,
+            TokenPort tokenPort
+    ){
+        return new VerifyCodeUseCase(passwordResetCodePort, hashPort, userPort, tokenPort);
+    }
+
+    @Bean
+    public SendCodeUseCase requestPasswordResetUseCase(
+            EmailPort emailPort,
+            PasswordResetCodePort passwordResetCodePort,
+            HashPort hashPort,
+            UserPort userPort
+    ){
+        return new SendCodeUseCase(emailPort,passwordResetCodePort,hashPort,userPort);
+    }
 
     @Bean
     public RegisterUseCase registerUseCase(

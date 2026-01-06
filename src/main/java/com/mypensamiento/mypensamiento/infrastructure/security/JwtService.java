@@ -1,6 +1,5 @@
 package com.mypensamiento.mypensamiento.infrastructure.security;
 
-import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -70,6 +68,22 @@ public class JwtService {
                  transactionTime,
                  refreshExpiration.toMillis()
          );
+     }
+
+     public TokenResponse generatePasswordResetToken(UserDetails userDetails, LocalDateTime transactionTime) {
+
+         Map<String, Object> claims = new HashMap<>();
+         claims.put("scope", "PASSWORD_RESET");
+
+         long resetExpiration = 900000;
+
+        return buildToken(
+                claims,
+                userDetails,
+                transactionTime,
+                resetExpiration
+        );
+
      }
 
      private TokenResponse buildToken(

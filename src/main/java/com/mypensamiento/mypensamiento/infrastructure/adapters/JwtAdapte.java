@@ -37,6 +37,15 @@ public class JwtAdapte  implements TokenPort {
     }
 
     @Override
+    public TokenResponse generatePasswordResetToken(User user, LocalDateTime transactionTime) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .build();
+        return jwtService.generatePasswordResetToken(userDetails,transactionTime);
+    }
+
+    @Override
     public String extractUsername(String token) {
         return jwtService.extractUsername(token);
     }
