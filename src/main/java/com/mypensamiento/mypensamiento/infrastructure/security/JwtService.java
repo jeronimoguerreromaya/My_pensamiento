@@ -145,4 +145,20 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+
+    public String extractClaimByName(String token, String claimName) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get(claimName, String.class);
+    }
+
+    public boolean isResetTokenValid(String token) {
+        try {
+            final Claims claims = extractAllClaims(token);
+            String scope = claims.get("scope", String.class);
+            return "PASSWORD_RESET".equals(scope) && !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }

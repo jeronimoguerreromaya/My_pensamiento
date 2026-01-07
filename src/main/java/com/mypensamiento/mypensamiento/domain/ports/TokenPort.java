@@ -12,4 +12,5 @@ public interface TokenPort {
     TokenResponse generatePasswordResetToken(User user,LocalDateTime transactionTime);
     String extractUsername(String token);
     boolean validateToken(String token, User user);
+    boolean isResetTokenValid (String token);
 }

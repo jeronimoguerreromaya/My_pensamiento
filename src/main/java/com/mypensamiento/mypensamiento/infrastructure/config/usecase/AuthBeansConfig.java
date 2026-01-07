@@ -1,6 +1,7 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
 import com.mypensamiento.mypensamiento.application.usecase.Auth.*;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.PasswordReset;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.SendCodeUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.VerifyCodeUseCase;
 import com.mypensamiento.mypensamiento.domain.ports.*;
@@ -14,6 +15,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 @Configuration
 public class AuthBeansConfig {
+
+    @Bean
+    public PasswordReset PasswordReset(
+            UserPort userPort,
+            PasswordEncoderPort passwordEncoderPort,
+            TokenPort tokenPort,
+            HashPort hashPort,
+            RefreshTokenPort refreshTokenPort
+    ){
+        return new PasswordReset(userPort,passwordEncoderPort,tokenPort,hashPort,refreshTokenPort);
+    }
 
     @Bean
     public VerifyCodeUseCase verifyCodeUseCase(

@@ -60,5 +60,9 @@ public class JwtAdapte  implements TokenPort {
         return jwtService.isTokenValid(token,userDetails);
     }
 
+    @Override
+    public boolean isResetTokenValid (String token){
+        return jwtService.isResetTokenValid(token);
+    }
 
 }

@@ -8,6 +8,7 @@ import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.PasswordReset;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.SendCodeUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.VerifyCodeUseCase;
 import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
@@ -37,6 +38,9 @@ public class AuthController {
 
     @Autowired
     VerifyCodeUseCase verifyCodeUseCase;
+
+    @Autowired
+    PasswordReset passwordReset;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterUserRequest request){
@@ -85,6 +89,13 @@ public class AuthController {
     @PostMapping("/v/{opt}/{email}")
     public ResponseEntity<TokenResponse> r(@Validated @PathVariable String opt, @Validated @PathVariable String email){
         TokenResponse authResponse= this.verifyCodeUseCase.execute(opt,email);
+        return ResponseEntity.ok(authResponse);
+
+    }
+
+    @PostMapping("/n/{newPass}/{token}")
+    public ResponseEntity<AuthResponse> n(@Validated @PathVariable String newPass, @Validated @PathVariable String token){
+        AuthResponse authResponse= this.passwordReset.execute(newPass,token);
         return ResponseEntity.ok(authResponse);
 
     }
