@@ -6,7 +6,7 @@ import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.*;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

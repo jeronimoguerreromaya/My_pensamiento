@@ -10,7 +10,7 @@ import com.mypensamiento.mypensamiento.domain.ports.HashPort;
 import com.mypensamiento.mypensamiento.domain.ports.RefreshTokenPort;
 import com.mypensamiento.mypensamiento.domain.ports.TokenPort;
 import com.mypensamiento.mypensamiento.domain.ports.UserPort;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

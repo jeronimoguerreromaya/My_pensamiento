@@ -1,10 +1,11 @@
-package com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor;
+package com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword;
 
+import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.ValidateCodeRequest;
 import com.mypensamiento.mypensamiento.application.exception.InvalidCodeException;
 import com.mypensamiento.mypensamiento.domain.model.PasswordResetCode;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.*;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 
 import java.time.LocalDateTime;
 
@@ -22,14 +23,14 @@ public class VerifyCodeUseCase {
         this.tokenPort = tokenPort;
     }
 
-    public TokenResponse execute(String opt, String email) {
-        if(opt==null || email==null){
+    public TokenResponse execute(ValidateCodeRequest request) {
+        if(request.code()==null || request.email()==null){
             throw new InvalidCodeException("Fields are required");
         }
 
-        String optHash = hashPort.hash(opt);
+        String optHash = hashPort.hash(request.code());
 
-        PasswordResetCode saveCode = passwordResetCodePort.getByUserEmail(email);
+        PasswordResetCode saveCode = passwordResetCodePort.getByUserEmail( request.email());
 
         if (saveCode == null || !saveCode.canTryAgain()) {
             throw new InvalidCodeException("Invalid Code, please try again or request a new one");
@@ -45,11 +46,11 @@ public class VerifyCodeUseCase {
 
         passwordResetCodePort.save(saveCode);
 
-        if(!email.equals(saveCode.getUserEmail())){
+        if(! request.email().equals(saveCode.getUserEmail())){
             throw new InvalidCodeException("not match");
         }
 
-        User user = userPort.findByEmail(email);
+        User user = userPort.findByEmail( request.email());
 
         return tokenPort.generatePasswordResetToken(user, LocalDateTime.now());
 

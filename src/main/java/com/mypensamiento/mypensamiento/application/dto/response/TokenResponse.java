@@ -1,4 +1,4 @@
-package com.mypensamiento.mypensamiento.infrastructure.dto;
+package com.mypensamiento.mypensamiento.application.dto.response;
 
 import java.time.LocalDateTime;
 

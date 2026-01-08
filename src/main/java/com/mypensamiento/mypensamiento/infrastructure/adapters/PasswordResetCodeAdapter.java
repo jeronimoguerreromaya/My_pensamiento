@@ -26,7 +26,7 @@ public class PasswordResetCodeAdapter implements PasswordResetCodePort {
 
     @Override
     @Transactional
-    public void markUsedByEmail(String email) {
+    public void markUsedAllByEmail(String email) {
         passwordResetCodeRepository.markAllAsUsedByEmail(email);
     }
 

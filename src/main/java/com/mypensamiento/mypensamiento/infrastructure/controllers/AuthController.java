@@ -2,16 +2,19 @@ package com.mypensamiento.mypensamiento.infrastructure.controllers;
 
 
 import com.mypensamiento.mypensamiento.application.dto.request.LoginRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.PasswordChangeRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.PasswordResetRequest;
 import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.ValidateCodeRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LogoutAllUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.PasswordReset;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.SendCodeUseCase;
-import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor.VerifyCodeUseCase;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.PasswordChangeUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.SendCodeUseCase;
+import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.VerifyCodeUseCase;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +43,7 @@ public class AuthController {
     VerifyCodeUseCase verifyCodeUseCase;
 
     @Autowired
-    PasswordReset passwordReset;
+    PasswordChangeUseCase passwordReset;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Validated @RequestBody RegisterUserRequest request){
@@ -79,23 +82,22 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/r/{email}")
-    public ResponseEntity<AuthResponse> r(@Validated @PathVariable String email){
-        this.requestPasswordResetUseCase.execute(email);
-        return ResponseEntity.ok().build();
+    @PostMapping("/password-reset/request")
+    public ResponseEntity<String> requestPasswordReset(@Validated @RequestBody PasswordResetRequest request){
+        this.requestPasswordResetUseCase.execute(request);
+        return ResponseEntity.ok("Request forget password sent successfully. Check your email.");
+    }
+
+    @PostMapping("/password-reset/validate-code")
+    public ResponseEntity<TokenResponse> validatePasswordResetCode(@Validated @RequestBody ValidateCodeRequest request){
+        TokenResponse tokenResponse= this.verifyCodeUseCase.execute(request);
+        return ResponseEntity.ok(tokenResponse);
 
     }
 
-    @PostMapping("/v/{opt}/{email}")
-    public ResponseEntity<TokenResponse> r(@Validated @PathVariable String opt, @Validated @PathVariable String email){
-        TokenResponse authResponse= this.verifyCodeUseCase.execute(opt,email);
-        return ResponseEntity.ok(authResponse);
-
-    }
-
-    @PostMapping("/n/{newPass}/{token}")
-    public ResponseEntity<AuthResponse> n(@Validated @PathVariable String newPass, @Validated @PathVariable String token){
-        AuthResponse authResponse= this.passwordReset.execute(newPass,token);
+    @PostMapping("/password-reset/new-password")
+    public ResponseEntity<AuthResponse> resetPassword(@Validated PasswordChangeRequest request){
+        AuthResponse authResponse= this.passwordReset.execute(request);
         return ResponseEntity.ok(authResponse);
 
     }

@@ -6,7 +6,7 @@ public interface PasswordResetCodePort {
 
     void save(PasswordResetCode passwordResetCode);
 
-    void markUsedByEmail(String email);
+    void markUsedAllByEmail(String email);
 
     PasswordResetCode getByCode(String code);
 

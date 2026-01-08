@@ -2,7 +2,7 @@ package com.mypensamiento.mypensamiento.infrastructure.adapters;
 
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.TokenPort;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 import com.mypensamiento.mypensamiento.infrastructure.security.JwtService;
 import org.springframework.security.core.userdetails.UserDetails;
 

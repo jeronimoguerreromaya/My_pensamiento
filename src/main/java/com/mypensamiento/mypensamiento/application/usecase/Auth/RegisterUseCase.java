@@ -9,7 +9,7 @@ import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.model.categorie.Role;
 import com.mypensamiento.mypensamiento.domain.ports.*;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 
 import java.time.LocalDateTime;
 

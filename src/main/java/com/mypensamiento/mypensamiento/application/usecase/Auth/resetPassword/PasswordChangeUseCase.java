@@ -1,17 +1,17 @@
-package com.mypensamiento.mypensamiento.application.usecase.Auth.resetPasswor;
+package com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword;
 
-import com.mypensamiento.mypensamiento.application.dto.request.UpdatePasswordRequest;
+import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.PasswordChangeRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.UnauthorizedException;
 import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.*;
-import com.mypensamiento.mypensamiento.infrastructure.dto.TokenResponse;
+import com.mypensamiento.mypensamiento.application.dto.response.TokenResponse;
 
 import java.time.LocalDateTime;
 
-public class PasswordReset {
+public class PasswordChangeUseCase {
 
     UserPort userPort;
     PasswordEncoderPort passwordEncoderPort;
@@ -19,7 +19,7 @@ public class PasswordReset {
     HashPort hashPort;
     RefreshTokenPort refreshTokenPort;
 
-    public PasswordReset(
+    public PasswordChangeUseCase(
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             TokenPort tokenPort,
@@ -33,19 +33,19 @@ public class PasswordReset {
         this.refreshTokenPort = refreshTokenPort;
     }
 
-    public AuthResponse execute (String newPass, String token){
+    public AuthResponse execute (PasswordChangeRequest request){
 
-        if(newPass == null || newPass.isEmpty()){
+        if(request.password() == null || request.password().isEmpty()){
             throw new FieldValidationException("Password is required");
         }
-        if(!tokenPort.isResetTokenValid(token)){
+        if(!tokenPort.isResetTokenValid(request.token())){
             throw new UnauthorizedException("invalid token");
         }
-        String email = tokenPort.extractUsername(token);
+        String email = tokenPort.extractUsername(request.token());
 
         User user = userPort.findByEmail(email);
 
-        user.setPassword(passwordEncoderPort.encode(newPass));
+        user.setPassword(passwordEncoderPort.encode(request.password()));
         User userSave = userPort.save(user);
 
         LocalDateTime transactionTime = LocalDateTime.now();
