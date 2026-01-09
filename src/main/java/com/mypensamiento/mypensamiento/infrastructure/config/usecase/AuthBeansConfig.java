@@ -1,5 +1,6 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.*;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.PasswordChangeUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.SendCodeUseCase;
@@ -22,9 +23,17 @@ public class AuthBeansConfig {
             PasswordEncoderPort passwordEncoderPort,
             TokenPort tokenPort,
             HashPort hashPort,
-            RefreshTokenPort refreshTokenPort
+            RefreshTokenPort refreshTokenPort,
+            ServiceToken serviceToken
     ){
-        return new PasswordChangeUseCase(userPort,passwordEncoderPort,tokenPort,hashPort,refreshTokenPort);
+        return new PasswordChangeUseCase(
+                userPort,
+                passwordEncoderPort,
+                tokenPort,
+                hashPort,
+                refreshTokenPort,
+                serviceToken
+        );
     }
 
     @Bean
@@ -52,12 +61,12 @@ public class AuthBeansConfig {
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             RefreshTokenPort refreshTokenPort,
-            TokenPort tokenPort,
-            HashPort hashPort
+            HashPort hashPort,
+            ServiceToken serviceToken
 
 
     ){
-        return new RegisterUseCase(userPort,passwordEncoderPort,refreshTokenPort,tokenPort,hashPort);
+        return new RegisterUseCase(userPort,passwordEncoderPort,refreshTokenPort,hashPort,serviceToken);
     }
 
     @Bean
@@ -67,7 +76,8 @@ public class AuthBeansConfig {
             RefreshTokenPort refreshTokenPort,
             TokenPort tokenPort,
             AuthenticationPort authenticationPort,
-            HashPort hashPort
+            HashPort hashPort,
+            ServiceToken serviceToken
 
     ){
         return new LoginUseCase(
@@ -76,7 +86,8 @@ public class AuthBeansConfig {
                 refreshTokenPort,
                 tokenPort,
                 authenticationPort,
-                hashPort
+                hashPort,
+                serviceToken
 
         );
     }
@@ -85,9 +96,10 @@ public class AuthBeansConfig {
             RefreshTokenPort refreshTokenPort,
             UserPort userPort,
             TokenPort tokenPort,
-            HashPort hashPort
+            HashPort hashPort,
+            ServiceToken serviceToken
     ){
-        return new RefreshUseCase(refreshTokenPort,userPort,tokenPort,hashPort);
+        return new RefreshUseCase(refreshTokenPort,userPort,tokenPort,hashPort,serviceToken);
     }
 
     @Bean
@@ -106,6 +118,10 @@ public class AuthBeansConfig {
         return new LogoutAllUseCase(refreshTokenPort, tokenPort);
     }
 
+    @Bean
+    public ServiceToken serviceToken(TokenPort tokenPort){
+        return new ServiceToken(tokenPort);
+    }
 
     @Bean
     public TokenPort tokenPort(JwtService jwtService){

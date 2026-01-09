@@ -15,6 +15,22 @@ public class RefreshToken {
 
     public RefreshToken() {}
 
+    public RefreshToken(
+            Long user_id,
+            String token_hash,
+            LocalDateTime expires_at
+    ) {
+        this.user_id = user_id;
+        this.token_hash = token_hash;
+        this.created_at = LocalDateTime.now();
+        this.expires_at = expires_at;
+        this.revoked = false;
+        this.valid = true;
+        this.replaced_by_hash = null;
+    }
+
+
+
     public Long getId() {
         return id;
     }

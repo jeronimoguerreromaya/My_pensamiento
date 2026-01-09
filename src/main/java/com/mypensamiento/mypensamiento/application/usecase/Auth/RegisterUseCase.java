@@ -5,6 +5,7 @@ import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.model.categorie.Role;
@@ -18,23 +19,22 @@ public class RegisterUseCase {
     UserPort userPort;
     PasswordEncoderPort passwordEncoderPort;
     RefreshTokenPort refreshTokenPort;
-    TokenPort tokenPort;
     HashPort hashPort;
-
+    ServiceToken serviceToken;
 
     public RegisterUseCase(
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             RefreshTokenPort refreshTokenPort,
-            TokenPort tokenPort,
-            HashPort hashPort
+            HashPort hashPort,
+            ServiceToken serviceToken
 
     ) {
         this.userPort = userPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.refreshTokenPort = refreshTokenPort;
-        this.tokenPort = tokenPort;
         this.hashPort = hashPort;
+        this.serviceToken = serviceToken;
 
     }
     public AuthResponse execute(RegisterUserRequest request) {
@@ -45,7 +45,7 @@ public class RegisterUseCase {
             throw new FieldValidationException("Some Fields are required");
         }
 
-
+        LocalDateTime transactionTime = LocalDateTime.now();
 
         if(userPort.existsByEmail(request.email())){
             throw new EmailAlreadyExistsException("Email already exists");
@@ -54,44 +54,27 @@ public class RegisterUseCase {
             throw new NickNameAlreadyExistsException("Nickname already exists");
         }
 
-        LocalDateTime transactionTime = LocalDateTime.now();
-
-        User user = new User()
-                .setNickname(request.nickname())
-                .setEmail(request.email())
-                .setPassword(passwordEncoderPort.encode(request.password()))
-                .setStatus(Boolean.TRUE)
-                .setRole(Role.USER)
-                .setCreated_at(transactionTime);
-
-        if (request.full_name() != null && !request.full_name().isEmpty()) {
-            user.setFull_name(request.full_name());
-        }
-        if (request.bio() != null && !request.bio().isEmpty()) {
-            user.setBio(request.bio());
-        }
-        if (request.profile_picture() != null && !request.profile_picture().isEmpty() && !"null".equals(request.profile_picture())) {
-            user.setProfile_picture(request.profile_picture());
-        }
+        User user = new User(
+                request.nickname(),
+                request.email(),
+                passwordEncoderPort.encode(request.password()),
+                request.full_name(),
+                request.bio(),
+                request.profile_picture()
+        );
 
         User userSave = userPort.save(user);
 
-        TokenResponse accessToken = tokenPort.generateToken(userSave,transactionTime);
-        TokenResponse refreshToken = tokenPort.generateRefreshToken(userSave,transactionTime);
+        AuthResponse authResponse = serviceToken.generateAuth(userSave,transactionTime);
 
-        String refreshTokenHash = hashPort.hash(refreshToken.token());
+        RefreshToken refreshTokenDomain = new RefreshToken(
+                user.getId(),
+                hashPort.hash(authResponse.refresh()),
+                authResponse.refreshExpiresIn()
+        );
+        refreshTokenPort.save(refreshTokenDomain);
 
-        RefreshToken refreshTokenSave = new RefreshToken();
-            refreshTokenSave.setUser_id(userSave.getId());
-            refreshTokenSave.setToken(refreshTokenHash);
-            refreshTokenSave.setCreated_at(transactionTime);
-            refreshTokenSave.setExpires_at(refreshToken.expirationDate());
-            refreshTokenSave.setRevoked(false);
-            refreshTokenSave.setValid(true);
-
-        refreshTokenPort.save(refreshTokenSave);
-
-        return new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
+        return authResponse;
     }
 
 }

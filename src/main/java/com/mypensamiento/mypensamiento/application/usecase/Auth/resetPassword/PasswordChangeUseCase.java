@@ -4,6 +4,7 @@ import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.Pas
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.UnauthorizedException;
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.*;
@@ -18,13 +19,15 @@ public class PasswordChangeUseCase {
     TokenPort tokenPort;
     HashPort hashPort;
     RefreshTokenPort refreshTokenPort;
+    ServiceToken serviceToken;
 
     public PasswordChangeUseCase(
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             TokenPort tokenPort,
             HashPort hashPort,
-            RefreshTokenPort refreshTokenPort
+            RefreshTokenPort refreshTokenPort,
+            ServiceToken serviceToken
     ) {
         this.userPort = userPort;
         this.passwordEncoderPort = passwordEncoderPort;
@@ -41,6 +44,9 @@ public class PasswordChangeUseCase {
         if(!tokenPort.isResetTokenValid(request.token())){
             throw new UnauthorizedException("invalid token");
         }
+
+        LocalDateTime transactionTime = LocalDateTime.now();
+
         String email = tokenPort.extractUsername(request.token());
 
         User user = userPort.findByEmail(email);
@@ -48,22 +54,16 @@ public class PasswordChangeUseCase {
         user.setPassword(passwordEncoderPort.encode(request.password()));
         User userSave = userPort.save(user);
 
-        LocalDateTime transactionTime = LocalDateTime.now();
+        AuthResponse authResponse = serviceToken.generateAuth(userSave,transactionTime);
 
-        TokenResponse accessToken = tokenPort.generateToken(userSave,transactionTime);
-        TokenResponse refreshToken = tokenPort.generateRefreshToken(userSave,transactionTime);
-
-        RefreshToken refreshTokenDomain = new RefreshToken();
-        refreshTokenDomain.setUser_id(userSave.getId());
-        refreshTokenDomain.setToken(hashPort.hash(refreshToken.token()));
-        refreshTokenDomain.setCreated_at(transactionTime);
-        refreshTokenDomain.setExpires_at(refreshToken.expirationDate());
-        refreshTokenDomain.setRevoked(false);
-        refreshTokenDomain.setValid(true);
-
+        RefreshToken refreshTokenDomain = new RefreshToken(
+            user.getId(),
+            hashPort.hash(authResponse.refresh()),
+            authResponse.refreshExpiresIn()
+        );
         refreshTokenPort.save(refreshTokenDomain);
 
-        return  new AuthResponse(accessToken.token(),refreshToken.token(),accessToken.expirationDate());
+        return  authResponse;
 
     }
 }

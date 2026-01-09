@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 public record AuthResponse (
-        String accestoken,
-        String refreshToken,
-        LocalDateTime expiresIn
+        String access,
+        String refresh,
+        LocalDateTime accessExpiresIn,
+        LocalDateTime refreshExpiresIn
 ){
 }

@@ -17,6 +17,25 @@ public class User {
     private Role role;
     private Boolean status;
 
+    public User(
+            String nickname,
+            String email,
+            String password,
+            String full_name,
+            String bio,
+            String profile_picture
+    ){
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.role = Role.USER;
+        this.full_name = full_name;
+        this.bio = bio;
+        this.profile_picture = profile_picture;
+        this.status = true;
+        this.created_at = LocalDateTime.now();
+    }
+
     public User(String nickname, String email, String password, String full_name, String bio, String profile_picture, Role role) {
         this.nickname = nickname;
         this.email = email;
