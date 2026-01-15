@@ -17,7 +17,6 @@ public class LoginUseCase {
     UserPort userPort;
     PasswordEncoderPort passwordEncoderPort;
     RefreshTokenPort refreshTokenPort;
-    TokenPort tokenPort;
     AuthenticationPort authenticationPort;
     HashPort hashPort;
     ServiceToken serviceToken;
@@ -26,7 +25,6 @@ public class LoginUseCase {
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             RefreshTokenPort refreshTokenPort,
-            TokenPort tokenPort,
             AuthenticationPort authenticationPort,
             HashPort hashPort,
             ServiceToken serviceToken
@@ -34,7 +32,6 @@ public class LoginUseCase {
         this.userPort = userPort;
         this.passwordEncoderPort = passwordEncoderPort;
         this.refreshTokenPort = refreshTokenPort;
-        this.tokenPort = tokenPort;
         this.authenticationPort = authenticationPort;
         this.hashPort = hashPort;
         this.serviceToken = serviceToken;

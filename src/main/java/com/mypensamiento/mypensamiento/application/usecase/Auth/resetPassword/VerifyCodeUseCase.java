@@ -24,35 +24,39 @@ public class VerifyCodeUseCase {
     }
 
     public TokenResponse execute(ValidateCodeRequest request) {
-        if(request.code()==null || request.email()==null){
-            throw new InvalidCodeException("Fields are required");
-        }
-
-        String optHash = hashPort.hash(request.code());
+        validateRequest(request);
 
         PasswordResetCode saveCode = passwordResetCodePort.getByUserEmail( request.email());
 
         if (saveCode == null || !saveCode.canTryAgain()) {
-            throw new InvalidCodeException("Invalid Code, please try again or request a new one");
+            throw new InvalidCodeException("The provided code is incorrect");
         }
 
-        if(!saveCode.getHashedCode().equals(optHash)){
+        String otpHash = hashPort.hash(request.code());
+        if(!saveCode.getHashedCode().equals(otpHash)){
             saveCode.registerFailedAttempt();
             passwordResetCodePort.save(saveCode);
             throw new InvalidCodeException("The provided code is incorrect");
         }
 
-        saveCode.markAsUsed();
+        User user = userPort.findByEmail( request.email());
+        if (user == null) {
+            throw new InvalidCodeException("The provided code is incorrect");
+        }
 
+        saveCode.markAsUsed();
         passwordResetCodePort.save(saveCode);
 
         if(! request.email().equals(saveCode.getUserEmail())){
-            throw new InvalidCodeException("not match");
+            throw new InvalidCodeException("The provided code is incorrect");
         }
 
-        User user = userPort.findByEmail( request.email());
-
         return tokenPort.generatePasswordResetToken(user, LocalDateTime.now());
+    }
 
+    private void validateRequest(ValidateCodeRequest request) {
+        if (request.code() == null || request.email() == null || request.email().isBlank()) {
+            throw new InvalidCodeException("Fields are required");
+        }
     }
 }

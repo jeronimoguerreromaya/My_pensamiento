@@ -4,6 +4,7 @@ import com.mypensamiento.mypensamiento.application.dto.request.RegisterUserReque
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.EmailAlreadyExistsException;
 import com.mypensamiento.mypensamiento.application.exception.NickNameAlreadyExistsException;
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RegisterUseCase;
 import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
@@ -40,6 +41,9 @@ public class RegisterUseCaseTest {
     @Mock
     HashPort hashPort;
 
+    @Mock
+    ServiceToken serviceToken;
+
     @InjectMocks
     RegisterUseCase registerUseCase;
 
@@ -61,21 +65,27 @@ public class RegisterUseCaseTest {
         savedUser.setId(1L);
         when(userPort.save(any(User.class))).thenReturn(savedUser);
 
-        TokenResponse mockToken = new TokenResponse("access-token", LocalDateTime.now().plusHours(1));
-        TokenResponse mockRefreshToken = new TokenResponse("refresh-token", LocalDateTime.now().plusDays(1));
+        String myAccessToken = "new-access";
+        String myRefreshToken = "new-refresh";
 
-        when(tokenPort.generateToken(any(User.class), any(LocalDateTime.class))).thenReturn(mockToken);
-        when(tokenPort.generateRefreshToken(any(User.class), any(LocalDateTime.class))).thenReturn(mockRefreshToken);
+        AuthResponse authResponse = new AuthResponse(
+                myAccessToken,
+                myRefreshToken,
+                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusDays(1)
+        );
 
-        when(hashPort.hash("refresh-token")).thenReturn("hashed-refresh-token");
+        when(serviceToken.generateAuth(eq(savedUser), any(LocalDateTime.class))).thenReturn(authResponse);
+
+        when(hashPort.hash(myRefreshToken)).thenReturn("hashed-refresh-token");
 
         //Act
         AuthResponse response = registerUseCase.execute(request);
 
         //Assert
         assertNotNull(response);
-        assertEquals("access-token", response.accestoken());
-        assertEquals("refresh-token", response.refreshToken());
+        assertEquals("new-access", response.access());
+        assertEquals("new-refresh", response.refresh());
 
         verify(userPort, times(1)).save(any(User.class));
         verify(refreshTokenPort, times(1)).save(any(RefreshToken.class));
@@ -86,21 +96,25 @@ public class RegisterUseCaseTest {
     @Test
     void register_whenEmailAlreadyExists_shouldThrowEmailAlreadyExistException (){
         //Arrage
+        String email = "example@example.com";
         RegisterUserRequest request = new RegisterUserRequest(
                 "nickName",
-                "example@example.com",
+                email,
                 "password",
                 "full_name",
                 "bio",
                 "profile_picture"
         );
 
-
+        when(userPort.existsByEmail(email)).thenReturn(true);
 
         //Act-Assert
-        EmailAlreadyExistsException exception = assertThrows(EmailAlreadyExistsException.class, () -> registerUseCase.execute(request));
+        EmailAlreadyExistsException exception = assertThrows(
+                EmailAlreadyExistsException.class,
+                () -> registerUseCase.execute(request)
+        );
 
-        assertEquals("Email example@example.com already exists", exception.getMessage());
+        assertEquals("Email already exists", exception.getMessage());
 
         verify(userPort, never()).save(any(User.class));
         verify(refreshTokenPort, never()).save(any(RefreshToken.class));
@@ -113,8 +127,11 @@ public class RegisterUseCaseTest {
     @Test
     void register_whenNickNameAlreadyExists_shouldThrowNickNameAlreadyExistsException (){
         //Arrage
+
+        String nickName = "nickName";
+
         RegisterUserRequest request = new RegisterUserRequest(
-                "nickName",
+                nickName,
                 "example@example.com",
                 "password",
                 "full_name",
@@ -122,11 +139,12 @@ public class RegisterUseCaseTest {
                 "profile_picture"
         );
 
+        when(userPort.existsByNickname(nickName)).thenReturn(true);
 
         //Act-Assert
         NickNameAlreadyExistsException exception = assertThrows(NickNameAlreadyExistsException.class, () -> registerUseCase.execute(request));
 
-        assertEquals("Nickname nickName already exists", exception.getMessage());
+        assertEquals("Nickname already exists", exception.getMessage());
 
         verify(userPort, never()).save(any(User.class));
         verify(refreshTokenPort, never()).save(any(RefreshToken.class));

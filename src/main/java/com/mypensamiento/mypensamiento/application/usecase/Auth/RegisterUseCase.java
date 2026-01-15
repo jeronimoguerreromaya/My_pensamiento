@@ -68,7 +68,7 @@ public class RegisterUseCase {
         AuthResponse authResponse = serviceToken.generateAuth(userSave,transactionTime);
 
         RefreshToken refreshTokenDomain = new RefreshToken(
-                user.getId(),
+                userSave.getId(),
                 hashPort.hash(authResponse.refresh()),
                 authResponse.refreshExpiresIn()
         );

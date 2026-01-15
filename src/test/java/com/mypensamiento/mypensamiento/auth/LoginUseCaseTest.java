@@ -3,6 +3,7 @@ package com.mypensamiento.mypensamiento.auth;
 import com.mypensamiento.mypensamiento.application.dto.request.LoginRequest;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.NotFoundException;
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.LoginUseCase;
 import com.mypensamiento.mypensamiento.domain.model.User;
 import com.mypensamiento.mypensamiento.domain.ports.*;
@@ -34,24 +35,26 @@ public class LoginUseCaseTest {
     RefreshTokenPort refreshTokenPort;
 
     @Mock
-    TokenPort tokenPort;
-
-    @Mock
     AuthenticationPort authenticationPort;
 
     @Mock
     HashPort hashPort;
+
+    @Mock
+    ServiceToken serviceToken;
 
     @InjectMocks
     LoginUseCase loginUseCase;
 
     @Test
     void login_whenEmailAndPasswordAreValid_shouldReturnTokens(){
-        //Arrage
-        LoginRequest request = new LoginRequest(
-          " example@example.com",
-                "Example123;"
+        //Arrange
+        String email="example@example.com";
+        String password="Example123;";
 
+        LoginRequest request = new LoginRequest(
+                email,
+                password
         );
 
         when(userPort.existsByEmail(anyString())).thenReturn(true);
@@ -62,26 +65,30 @@ public class LoginUseCaseTest {
 
         when(userPort.findByEmail(anyString())).thenReturn(saveUser);
 
-        TokenResponse mockToken = new TokenResponse("access-token", LocalDateTime.now().plusHours(1));
-        TokenResponse mockRefreshToken = new TokenResponse("refresh-token", LocalDateTime.now().plusDays(1));
+        String accessToken = "access-token";
+        String refreshToken = "refresh-token";
 
-        when(tokenPort.generateToken(any(User.class), any(LocalDateTime.class))).thenReturn(mockToken);
-        when(tokenPort.generateRefreshToken(any(User.class), any(LocalDateTime.class))).thenReturn(mockRefreshToken);
+        AuthResponse authResponse = new AuthResponse(
+                accessToken,
+                refreshToken,
+                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusDays(1)
+        );
 
-        when(hashPort.hash("refresh-token")).thenReturn("hashed-refresh-token");
+        when(serviceToken.generateAuth(eq(saveUser), any(LocalDateTime.class))).thenReturn(authResponse);
+
+        when(hashPort.hash(refreshToken)).thenReturn("hashed-refresh-token");
 
         //Act
         AuthResponse response = loginUseCase.execute(request);
 
         //Assert
         assertNotNull(response);
-        assertEquals("access-token", response.accestoken());
-        assertEquals("refresh-token", response.refreshToken());
+        assertEquals("access-token", response.access());
+        assertEquals("refresh-token", response.refresh());
 
         verify(authenticationPort,times(1)).authenticate(anyString(), anyString());
         verify(userPort,times(1)).findByEmail(anyString());
-        verify(tokenPort,times(1)).generateToken(any(User.class), any(LocalDateTime.class));
-        verify(tokenPort,times(1)).generateRefreshToken(any(User.class), any(LocalDateTime.class));
         verify(hashPort,times(1)).hash(anyString());
         verify(refreshTokenPort,times(1)).save(any(com.mypensamiento.mypensamiento.domain.model.RefreshToken.class));
 
@@ -104,8 +111,6 @@ public class LoginUseCaseTest {
         });
 
         verify(authenticationPort,never()).authenticate(anyString(), anyString());
-        verify(tokenPort,never()).generateToken(any(User.class), any(LocalDateTime.class));
-        verify(tokenPort,never()).generateRefreshToken(any(User.class), any(LocalDateTime.class));
         verify(hashPort,never()).hash(anyString());
         verify(refreshTokenPort,never()).save(any(com.mypensamiento.mypensamiento.domain.model.RefreshToken.class));
 
@@ -127,9 +132,6 @@ public class LoginUseCaseTest {
         assertThrows(BadCredentialsException.class, () -> {
             loginUseCase.execute(request);
         });
-
-        verify(tokenPort,never()).generateToken(any(User.class), any(LocalDateTime.class));
-        verify(tokenPort,never()).generateRefreshToken(any(User.class), any(LocalDateTime.class));
 
     }
 }

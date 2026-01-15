@@ -1,6 +1,7 @@
 package com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword;
 
 import com.mypensamiento.mypensamiento.application.dto.request.resetPassword.PasswordResetRequest;
+import com.mypensamiento.mypensamiento.application.service.ServiceRandomCode;
 import com.mypensamiento.mypensamiento.domain.model.PasswordResetCode;
 import com.mypensamiento.mypensamiento.domain.ports.EmailPort;
 import com.mypensamiento.mypensamiento.domain.ports.HashPort;
@@ -15,11 +16,19 @@ public class SendCodeUseCase {
     private final PasswordResetCodePort passwordResetCodePort;
     private final HashPort hashPort;
     private final UserPort userPort;
-    public SendCodeUseCase(EmailPort emailPort, PasswordResetCodePort passwordResetCodePort, HashPort hashPort, UserPort userPort) {
+    private final ServiceRandomCode serviceRandomCode;
+    public SendCodeUseCase(
+            EmailPort emailPort,
+            PasswordResetCodePort passwordResetCodePort,
+            HashPort hashPort,
+            UserPort userPort,
+            ServiceRandomCode serviceRandomCode
+    ) {
         this.emailPort = emailPort;
         this.passwordResetCodePort = passwordResetCodePort;
         this.hashPort = hashPort;
         this.userPort = userPort;
+        this.serviceRandomCode = serviceRandomCode;
     }
 
     public void execute (PasswordResetRequest request){
@@ -29,13 +38,13 @@ public class SendCodeUseCase {
 
         passwordResetCodePort.markUsedAllByEmail(request.email());
 
-        String opt = generateSixDigitCode();
+        String opt = serviceRandomCode.generateSixDigitCode();
+
         PasswordResetCode passwordResetCode = new PasswordResetCode(
                 request.email(),
                 hashPort.hash(opt),
                 5
         );
-
 
         passwordResetCodePort.save(passwordResetCode);
 
@@ -43,9 +52,4 @@ public class SendCodeUseCase {
 
     }
 
-    public static String generateSixDigitCode() {
-        SecureRandom random = new SecureRandom();
-        int code = 100000 + random.nextInt(900000);
-        return String.valueOf(code);
-    }
 }

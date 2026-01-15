@@ -1,5 +1,6 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
+import com.mypensamiento.mypensamiento.application.service.ServiceRandomCode;
 import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.*;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.resetPassword.PasswordChangeUseCase;
@@ -51,9 +52,10 @@ public class AuthBeansConfig {
             EmailPort emailPort,
             PasswordResetCodePort passwordResetCodePort,
             HashPort hashPort,
-            UserPort userPort
+            UserPort userPort,
+            ServiceRandomCode serviceRandomCode
     ){
-        return new SendCodeUseCase(emailPort,passwordResetCodePort,hashPort,userPort);
+        return new SendCodeUseCase(emailPort,passwordResetCodePort,hashPort,userPort,serviceRandomCode);
     }
 
     @Bean
@@ -74,7 +76,6 @@ public class AuthBeansConfig {
             UserPort userPort,
             PasswordEncoderPort passwordEncoderPort,
             RefreshTokenPort refreshTokenPort,
-            TokenPort tokenPort,
             AuthenticationPort authenticationPort,
             HashPort hashPort,
             ServiceToken serviceToken
@@ -84,7 +85,6 @@ public class AuthBeansConfig {
                 userPort,
                 passwordEncoderPort,
                 refreshTokenPort,
-                tokenPort,
                 authenticationPort,
                 hashPort,
                 serviceToken
@@ -121,6 +121,11 @@ public class AuthBeansConfig {
     @Bean
     public ServiceToken serviceToken(TokenPort tokenPort){
         return new ServiceToken(tokenPort);
+    }
+
+    @Bean
+    public ServiceRandomCode serviceRandomCode(){
+        return new ServiceRandomCode();
     }
 
     @Bean

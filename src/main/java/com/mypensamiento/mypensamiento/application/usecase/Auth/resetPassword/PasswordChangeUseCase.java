@@ -34,6 +34,7 @@ public class PasswordChangeUseCase {
         this.tokenPort = tokenPort;
         this.hashPort = hashPort;
         this.refreshTokenPort = refreshTokenPort;
+        this.serviceToken = serviceToken;
     }
 
     public AuthResponse execute (PasswordChangeRequest request){

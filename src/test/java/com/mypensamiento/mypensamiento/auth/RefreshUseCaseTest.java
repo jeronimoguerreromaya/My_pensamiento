@@ -3,6 +3,7 @@ package com.mypensamiento.mypensamiento.auth;
 import com.mypensamiento.mypensamiento.application.dto.response.AuthResponse;
 import com.mypensamiento.mypensamiento.application.exception.FieldValidationException;
 import com.mypensamiento.mypensamiento.application.exception.UnauthorizedException;
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.Auth.RefreshUseCase;
 import com.mypensamiento.mypensamiento.domain.model.RefreshToken;
 import com.mypensamiento.mypensamiento.domain.model.User;
@@ -40,6 +41,9 @@ public class RefreshUseCaseTest {
     @Mock
     HashPort hashPort;
 
+    @Mock
+    ServiceToken serviceToken;
+
     @InjectMocks
     RefreshUseCase refreshUseCase;
 
@@ -50,6 +54,8 @@ public class RefreshUseCaseTest {
         String header = "Bearer " + rawToken;
         String email = "test@example.com";
         String hashedCurrentToken = "hashed-old-token";
+
+
 
         when(tokenPort.extractUsername(rawToken)).thenReturn(email);
         when(userPort.existsByEmail(email)).thenReturn(true);
@@ -68,10 +74,15 @@ public class RefreshUseCaseTest {
         storedToken.setExpires_at(LocalDateTime.now().plusDays(1));
         when(refreshTokenPort.findByTokenHash(hashedCurrentToken)).thenReturn(storedToken);
 
-        TokenResponse mockAccess = new TokenResponse("new-access", LocalDateTime.now().plusHours(1));
-        TokenResponse mockRefresh = new TokenResponse("new-refresh", LocalDateTime.now().plusDays(1));
-        when(tokenPort.generateToken(eq(user), any(LocalDateTime.class))).thenReturn(mockAccess);
-        when(tokenPort.generateRefreshToken(eq(user), any(LocalDateTime.class))).thenReturn(mockRefresh);
+        AuthResponse authResponse = new AuthResponse(
+                "new-access",
+                "new-refresh",
+                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusDays(1)
+        );
+
+        when(serviceToken.generateAuth(eq(user), any(LocalDateTime.class))).thenReturn(authResponse);
+
         when(hashPort.hash("new-refresh")).thenReturn("hashed-new-refresh");
 
         //Act
@@ -79,8 +90,8 @@ public class RefreshUseCaseTest {
 
         //Assert
         assertNotNull(response);
-        assertEquals("new-access", response.accestoken());
-        assertEquals("new-refresh", response.refreshToken());
+        assertEquals("new-access", response.access());
+        assertEquals("new-refresh", response.refresh());
 
         assertFalse(storedToken.isValid());
         assertEquals("hashed-new-refresh", storedToken.getReplaced_by_hash());

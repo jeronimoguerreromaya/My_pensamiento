@@ -1,5 +1,6 @@
 package com.mypensamiento.mypensamiento.infrastructure.config.usecase;
 
+import com.mypensamiento.mypensamiento.application.service.ServiceToken;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdatePasswordUseCase;
 import com.mypensamiento.mypensamiento.application.usecase.user.UpdateUserPatchUseCase;
 import com.mypensamiento.mypensamiento.domain.ports.*;
@@ -18,16 +19,16 @@ public class UserBeansConfig {
     public UpdatePasswordUseCase updatePasswordUseCase(
             UserPort userRepository,
             PasswordEncoderPort passwordEncoderRepository,
-            TokenPort tokenPort,
             HashPort hashPort,
-            RefreshTokenPort refreshTokenPort
+            RefreshTokenPort refreshTokenPort,
+            ServiceToken serviceToken
     ){
         return new UpdatePasswordUseCase(
                 userRepository,
                 passwordEncoderRepository,
-                tokenPort,
                 hashPort,
-                refreshTokenPort
+                refreshTokenPort,
+                serviceToken
         );
     }
 }
