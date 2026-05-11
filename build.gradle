@@ -4,9 +4,9 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
-group = 'com.mypensamiento'
-version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
+group = 'com.jwtauthcore'
+version = '1.0.0'
+description = 'Production-ready JWT authentication reference implementation with Spring Boot'
 
 java {
 	toolchain {
